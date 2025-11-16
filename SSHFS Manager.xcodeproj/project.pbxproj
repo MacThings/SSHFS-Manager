@@ -12,6 +12,8 @@
 		2A583E562ECA304A00E7BCC0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A583E552ECA304A00E7BCC0 /* CoreData.framework */; };
 		2A583E582ECA305100E7BCC0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A583E572ECA305100E7BCC0 /* Foundation.framework */; };
 		2A583EAC2ECA330F00E7BCC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A583EAB2ECA330F00E7BCC0 /* Assets.xcassets */; };
+		2A583F022ECA7ECB00E7BCC0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2A583F002ECA7ECB00E7BCC0 /* Localizable.strings */; };
+		2A583F562ECA7FA100E7BCC0 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 2A583F552ECA7FA100E7BCC0 /* Sparkle */; };
 		2F7446990DB6B7EA00F9684A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F7446970DB6B7EA00F9684A /* MainMenu.xib */; };
 		4C25417D11F444E00030AF14 /* userDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C25417C11F444E00030AF14 /* userDefaults.plist */; };
 		4CD6889911EEF3FC0089DC51 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD6889811EEF3FC0089DC51 /* AppController.m */; };
@@ -34,6 +36,9 @@
 		2A583E552ECA304A00E7BCC0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2A583E572ECA305100E7BCC0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2A583EAB2ECA330F00E7BCC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2A583EAD2ECA7E8100E7BCC0 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2A583EAE2ECA7E8100E7BCC0 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2A583F012ECA7ECB00E7BCC0 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* SSHFS_Manager_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSHFS_Manager_Prefix.pch; sourceTree = "<group>"; };
 		4C25417C11F444E00030AF14 /* userDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = userDefaults.plist; sourceTree = "<group>"; };
 		4CD6889711EEF3FC0089DC51 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -52,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A583F562ECA7FA100E7BCC0 /* Sparkle in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				2A583E562ECA304A00E7BCC0 /* CoreData.framework in Frameworks */,
 				2A583E542ECA304000E7BCC0 /* AppKit.framework in Frameworks */,
@@ -120,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* Info.plist */,
+				2A583F002ECA7ECB00E7BCC0 /* Localizable.strings */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				2F7446970DB6B7EA00F9684A /* MainMenu.xib */,
 				4C25417C11F444E00030AF14 /* userDefaults.plist */,
@@ -183,8 +190,12 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SSHFS Manager */;
+			packageReferences = (
+				2A583F542ECA7FA100E7BCC0 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
@@ -199,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A583F022ECA7ECB00E7BCC0 /* Localizable.strings in Resources */,
 				2A583EAC2ECA330F00E7BCC0 /* Assets.xcassets in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				2F7446990DB6B7EA00F9684A /* MainMenu.xib in Resources */,
@@ -225,7 +237,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n# Ermittelt den aktuellen Benutzer\n#SYS_USER=$(id -un)\n\n# App auf den Desktop kopieren\n#cp -a \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\" \"/Users/$SYS_USER/Desktop/\"\n\n# App auf dem Desktop erneut codesignieren\n#codesign --force --deep --sign \"Apple Development: s.lamprecht@sl-soft.de (85JZW6284R)\" \"$DESKTOP_APP\"\n\n\n";
+			shellScript = "#!/bin/bash\n\n# Ermittelt den aktuellen Benutzer\nSYS_USER=$(id -un)\n\n# App auf den Desktop kopieren\ncp -a \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\" \"/Users/$SYS_USER/Desktop/\"\n\n# App auf dem Desktop erneut codesignieren\n#codesign --force --deep --sign \"Apple Development: s.lamprecht@sl-soft.de (85JZW6284R)\" \"$DESKTOP_APP\"\n\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -250,14 +262,24 @@
 			isa = PBXVariantGroup;
 			children = (
 				2A583E502ECA292C00E7BCC0 /* en */,
+				2A583EAD2ECA7E8100E7BCC0 /* de */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2A583F002ECA7ECB00E7BCC0 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2A583F012ECA7ECB00E7BCC0 /* de */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		2F7446970DB6B7EA00F9684A /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2A583E512ECA292C00E7BCC0 /* en */,
+				2A583EAE2ECA7E8100E7BCC0 /* de */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -523,6 +545,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2A583F542ECA7FA100E7BCC0 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2A583F552ECA7FA100E7BCC0 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2A583F542ECA7FA100E7BCC0 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }

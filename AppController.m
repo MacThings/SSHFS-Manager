@@ -266,9 +266,9 @@
 	[preferencesMenuItem setTarget:self];
 	[myStatusItemMenu addItem:preferencesMenuItem];
 	
-	NSMenuItem *aboutMenuItem = [[[NSMenuItem alloc] initWithTitle:@"About" action:@selector(showAbout:) keyEquivalent:@""] autorelease];
-	[aboutMenuItem setTarget:self];
-	[myStatusItemMenu addItem:aboutMenuItem];
+	//NSMenuItem *aboutMenuItem = [[[NSMenuItem alloc] initWithTitle:@"About" action:@selector(showAbout:) keyEquivalent:@""] autorelease];
+	//[aboutMenuItem setTarget:self];
+	//[myStatusItemMenu addItem:aboutMenuItem];
 	
 	NSMenuItem *quitMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(doQuit:) keyEquivalent:@""] autorelease];
 	[quitMenuItem setTarget:self];
@@ -314,7 +314,9 @@
 		[self retrieveSshfsPathFromTask:[aNotification object]];
 	} else if ([[aNotification object] processIdentifier] == shareMounterPID) {
 		if ([[aNotification object] terminationStatus] != 0) {
-			NSError *error = [NSError errorWithDomain:@"SSHFSManagerError" code:-2 userInfo:[NSDictionary dictionaryWithObject:@"Could not mount the selected share." forKey:NSLocalizedDescriptionKey]];	
+            NSError *error = [NSError errorWithDomain:@"SSHFSManagerError"
+                                                 code:-2
+                                             userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Could not mount the selected share.", @"Fehlermeldung beim Mounten eines Shares")}];
 			[[NSApplication sharedApplication] presentError:error];
 			[self setLastMountedLocalPath:nil];
 		} else {
