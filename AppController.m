@@ -115,12 +115,16 @@
 	NSString *statusItemImgPath = [mainBundle pathForResource:@"drive_web" ofType:@"png"];
 	statusItemImage = [[NSImage alloc] initWithContentsOfFile:statusItemImgPath];
 	
-	statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
-	[statusItem setMenu:[self statusItemMenu]];
-	[statusItem setImage:statusItemImage];
-	[statusItem setHighlightMode:YES];
-	[statusItem setLength:25.0];
-	[statusItem retain];
+    statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+    [statusItem setMenu:[self statusItemMenu]];
+    statusItem.button.image = statusItemImage;
+    statusItem.button.appearsDisabled = NO;
+    // Optional: Menu-Highlight, z. B. durch Wechsel der Bilder, oder wie folgt:
+    statusItem.button.highlighted = YES; // Gibt's nur lesend, nicht schreibend!
+    // Alternativ: Button-Highlighting wie folgt setzen (empfohlen):
+    statusItem.button.cell.highlighted = NSContentsCellMask | NSPushInCellMask;
+    [statusItem setLength:25.0];
+    [statusItem retain];
 	
 	if ([preferences boolForKey:@"autoUpdate"] == YES) {
 		[self setUpAutoUpdateTimer];
@@ -165,16 +169,16 @@
 	//[self refreshStatusItemMenu];
 } // eof sshfsPathChangedFrom:to:
 
--(void)localPathBrowseSheetDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode  contextInfo:(void *)contextInfo {
-	if (returnCode == NSOKButton) {
-		NSArray *filenames = [panel filenames];
-		if ([filenames count] > 0) {
-			NSString *filename = [filenames objectAtIndex:0];
-			NSManagedObject *currentShare = [[sharesController selectedObjects] objectAtIndex:0];
-			[currentShare setValue:filename forKey:@"localPath"];
-		} // eof if()
-	} // eof if()
-} // eof localPathBrowseSheetDidEnd:returnCode:contextInfo:
+- (void)localPathBrowseSheetDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSModalResponseOK) {
+        NSArray<NSURL *> *urls = [panel URLs];
+        if ([urls count] > 0) {
+            NSString *filename = [[urls objectAtIndex:0] path];
+            NSManagedObject *currentShare = [[sharesController selectedObjects] objectAtIndex:0];
+            [currentShare setValue:filename forKey:@"localPath"];
+        }
+    }
+}
 
 -(NSMenu *)statusItemMenu {
 	NSMenu *myStatusItemMenu = [[[NSMenu alloc] init] autorelease];
@@ -195,22 +199,32 @@
 	NSError *myError = nil;
 	NSArray *currentShares = [sharesContext executeFetchRequest:sharesFetchRequest error:&myError];
 	
-	if (myError != nil) {
-		BOOL errorResult = [[NSApplication sharedApplication] presentError:myError];
-		[[NSApplication sharedApplication] terminate:nil];
-	} // eof if()
+    if (myError != nil) {
+        [[NSApplication sharedApplication] presentError:myError];
+        [[NSApplication sharedApplication] terminate:nil];
+    }
 	
 	if ([currentShares count] == 0) {
 		NSMenuItem *noVolumesItem = [[[NSMenuItem alloc] initWithTitle:@"No volumes" action:nil keyEquivalent:@""] autorelease];
 		[noVolumesItem setEnabled:NO];
 		[myStatusItemMenu addItem:noVolumesItem];
 	} else {
-		NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-		NSArray *mountedFileSystems = [workspace mountedLocalVolumePaths];
-		
-		NSEnumerator *sharesEnum = [currentShares objectEnumerator];
-		NSManagedObject *currentObject = nil;
-		NSMutableDictionary *currentData = nil;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSArray<NSURL *> *mountedVolumeURLs = [fileManager mountedVolumeURLsIncludingResourceValuesForKeys:nil options:0];
+
+        NSMutableArray<NSString *> *mountedFileSystems = [NSMutableArray array];
+        for (NSURL *volumeURL in mountedVolumeURLs) {
+            NSString *path = [volumeURL path];
+            if (path) {
+                [mountedFileSystems addObject:path];
+            }
+        }
+
+        // Nun kannst du mountedFileSystems weiterverwenden, analog zum alten mountedLocalVolumePaths
+
+        NSEnumerator *sharesEnum = [currentShares objectEnumerator];
+        NSManagedObject *currentObject = nil;
+        NSMutableDictionary *currentData = nil;
 		while((currentObject = [sharesEnum nextObject])) {
 			BTHMenuItem *currentShareItem = [[[BTHMenuItem alloc] initWithTitle:[currentObject valueForKey:@"name"] action:@selector(doMountShare:) keyEquivalent:@""] autorelease];
 			[currentShareItem setTarget:self];
@@ -230,9 +244,9 @@
 			NSString *localPath = [currentObject valueForKey:@"localPath"];
 			[currentData setObject:localPath forKey:@"localPath"];
 			if (([mountedFileSystems containsObject:localPath]) || ([localPath isEqualToString:[self lastMountedLocalPath]] == YES)) {
-				[currentShareItem setState:NSOnState];
+                [currentShareItem setState:NSControlStateValueOn];
 			} else {
-				[currentShareItem setState:NSOffState];
+                [currentShareItem setState:NSControlStateValueOff];
 			} // eof if()
 			
 			[currentShareItem bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
@@ -315,30 +329,26 @@
 	} // eof if()
 } // eof checkATaskStatus:
 
--(void)retrieveSshfsPathFromTask:(NSTask *)aTask {
-	NSError *error = [NSError errorWithDomain:@"SSHFSManagerError" code:-1 userInfo:[NSDictionary dictionaryWithObject:@"Could not locate SSHFS binary." forKey:NSLocalizedDescriptionKey]];
-	if ([aTask terminationStatus] != 0) {
-		// Since NSTasks don't respect the user's environment (PATHs in this case)
-		// I decided not to show the error about not findings SSHFS binary.
-		/*NSLog(@"sshfsFinderTask terminationStatus = %d", [aTask terminationStatus]);
-		[NSApp presentError:error];*/
-	} else {
-		NSPipe *taskPipe = [aTask standardOutput];
-		NSFileHandle *taskPipeFileHandle = [taskPipe fileHandleForReading];
-		NSData *taskData = [taskPipeFileHandle availableData];
-		NSString *sshfsBinaryPath = [[[NSString alloc] initWithData:taskData encoding:NSUTF8StringEncoding] autorelease];
-		
-		if ((sshfsBinaryPath != nil) && ([sshfsBinaryPath isEqualToString:@""] == NO)) {
-			NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-			[preferences setValue:[sshfsBinaryPath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"sshfsPath"];
-			[preferences synchronize];
-		} else {
-			// Way too annoying.
-			//[NSApp presentError:error];
-		} // eof if()
-	} // eof if()
-	sshfsFinderPID = 0;
-	[self setIsWorking:NO];
+- (void)retrieveSshfsPathFromTask:(NSTask *)aTask {
+    if ([aTask terminationStatus] != 0) {
+        // Auskommentierte Fehlerbehandlung und Logging ist nicht aktiv
+        // ggf. hier wieder aktivieren, falls Fehlerbehandlung erwünscht
+    } else {
+        NSPipe *taskPipe = [aTask standardOutput];
+        NSFileHandle *taskPipeFileHandle = [taskPipe fileHandleForReading];
+        NSData *taskData = [taskPipeFileHandle availableData];
+        NSString *sshfsBinaryPath = [[[NSString alloc] initWithData:taskData encoding:NSUTF8StringEncoding] autorelease];
+
+        if ((sshfsBinaryPath != nil) && ([sshfsBinaryPath isEqualToString:@""] == NO)) {
+            NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+            [preferences setValue:[sshfsBinaryPath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"sshfsPath"];
+            [preferences synchronize];
+        } else {
+            // Auskommentierte Fehlerbehandlung
+        } // eof if()
+    } // eof if()
+    sshfsFinderPID = 0;
+    [self setIsWorking:NO];
 } // eof retrieveSshfsPathFromTask:
 
 -(void)managedObjectContextDidSave:(NSNotification *)aNotification {
@@ -379,7 +389,7 @@
 } // eof testTimer
 
 -(IBAction)doMountShare:(id)sender {
-	if ([sender state] == NSOnState) {
+    if ([sender state] == NSControlStateValueOn) {
 		return;
 	} // eof if()
 	
@@ -425,14 +435,20 @@
 	} // eof if()
 } // eof doMountShare:
 
--(IBAction)doBrowseLocalPath:(id)sender {
-	NSOpenPanel *localPathPanel = [NSOpenPanel openPanel];
-	[localPathPanel setCanChooseFiles:NO];
-	[localPathPanel setCanChooseDirectories:YES];
-	[localPathPanel setAllowsMultipleSelection:NO];
-	
-	[localPathPanel beginSheetForDirectory:[@"~" stringByExpandingTildeInPath] file:@"" modalForWindow:preferencesWindow modalDelegate:self didEndSelector:@selector(localPathBrowseSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-} // eof doBrowseLocalPath:
+- (IBAction)doBrowseLocalPath:(id)sender {
+    NSOpenPanel *localPathPanel = [NSOpenPanel openPanel];
+    [localPathPanel setCanChooseFiles:NO];
+    [localPathPanel setCanChooseDirectories:YES];
+    [localPathPanel setAllowsMultipleSelection:NO];
+
+    // Start-Verzeichnis setzen
+    localPathPanel.directoryURL = [NSURL fileURLWithPath:[@"~" stringByExpandingTildeInPath]];
+
+    [localPathPanel beginSheetModalForWindow:preferencesWindow completionHandler:^(NSInteger result) {
+        // Cast von NSInteger auf int, um Konvertierungswarnungen zu vermeiden
+        [self localPathBrowseSheetDidEnd:localPathPanel returnCode:(int)result contextInfo:NULL];
+    }];
+}
 
 -(IBAction)doAddShare:(id)sender {
 	[sharesController add:sender];
