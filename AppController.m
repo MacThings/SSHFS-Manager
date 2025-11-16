@@ -262,17 +262,27 @@
 	NSMenuItem *separatorItem = [NSMenuItem separatorItem];
 	[myStatusItemMenu addItem:separatorItem];
 	
-	NSMenuItem *preferencesMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Preferences" action:@selector(showPreferences:) keyEquivalent:@""] autorelease];
-	[preferencesMenuItem setTarget:self];
-	[myStatusItemMenu addItem:preferencesMenuItem];
-	
-	//NSMenuItem *aboutMenuItem = [[[NSMenuItem alloc] initWithTitle:@"About" action:@selector(showAbout:) keyEquivalent:@""] autorelease];
-	//[aboutMenuItem setTarget:self];
-	//[myStatusItemMenu addItem:aboutMenuItem];
-	
-	NSMenuItem *quitMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(doQuit:) keyEquivalent:@""] autorelease];
-	[quitMenuItem setTarget:self];
-	[myStatusItemMenu addItem:quitMenuItem];
+    NSMenuItem *preferencesMenuItem =
+        [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences", nil)
+                                    action:@selector(showPreferences:)
+                             keyEquivalent:@""] autorelease];
+    [preferencesMenuItem setTarget:self];
+    [myStatusItemMenu addItem:preferencesMenuItem];
+
+    // Optional:
+    //NSMenuItem *aboutMenuItem =
+    //    [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"About", nil)
+    //                                action:@selector(showAbout:)
+    //                         keyEquivalent:@""] autorelease];
+    //[aboutMenuItem setTarget:self];
+    //[myStatusItemMenu addItem:aboutMenuItem];
+
+    NSMenuItem *quitMenuItem =
+        [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", nil)
+                                    action:@selector(doQuit:)
+                             keyEquivalent:@""] autorelease];
+    [quitMenuItem setTarget:self];
+    [myStatusItemMenu addItem:quitMenuItem];
 	
 	[autoreleasePool drain];
 	

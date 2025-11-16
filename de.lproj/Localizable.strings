@@ -1,1 +1,10 @@
-"Could not mount the selected share." = "Bla";
+"Could not mount the selected share." = "Konnte den gewählten Share nicht mounten.";
+"There were errors while saving changes. Discard changes?" = "Beim Speichern ist ein Fehler aufgetreten. Änderungen verwerfen?";
+"Discard" = "Verwerfen";
+"Cancel" = "Abbrechen";
+"Could not save changes while quitting. Quit anyway?" = "Änderungen konnten beim Beenden nicht gespeichert werden. Trotzdem beenden?";
+"Quit anyway" = "Trotzdem beenden";
+"Cancel" = "Abbrechen";
+"Preferences" = "Einstellungen";
+"About" = "Über";
+"Quit" = "Beenden";

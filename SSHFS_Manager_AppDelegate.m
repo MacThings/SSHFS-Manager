@@ -188,9 +188,9 @@
                 else {
 					
                     NSAlert *alert = [[NSAlert alloc] init];
-                    [alert setMessageText:@"Could not save changes while quitting. Quit anyway?"];
-                    [alert addButtonWithTitle:@"Quit anyway"];  // Erster Button - Rückgabewert NSAlertFirstButtonReturn
-                    [alert addButtonWithTitle:@"Cancel"];       // Zweiter Button - Rückgabewert NSAlertSecondButtonReturn
+                    [alert setMessageText:NSLocalizedString(@"Could not save changes while quitting. Quit anyway?", nil)];
+                    [alert addButtonWithTitle:NSLocalizedString(@"Quit anyway", nil)];
+                    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
                     NSModalResponse response = [alert runModal];
                     if (response == NSAlertSecondButtonReturn) {
@@ -230,9 +230,9 @@
         if ([managedObjectContext commitEditing]) {
             if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
                 NSAlert *alert = [[NSAlert alloc] init];
-                [alert setMessageText:@"There were errors while saving changes. Discard changes?"];
-                [alert addButtonWithTitle:@"Discard"]; // Erster Button = NSAlertFirstButtonReturn
-                [alert addButtonWithTitle:@"Cancel"];  // Zweiter Button = NSAlertSecondButtonReturn
+                [alert setMessageText:NSLocalizedString(@"There were errors while saving changes. Discard changes?", nil)];
+                [alert addButtonWithTitle:NSLocalizedString(@"Discard", nil)];
+                [alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
                 NSModalResponse response = [alert runModal];
                 if (response == NSAlertSecondButtonReturn) {
