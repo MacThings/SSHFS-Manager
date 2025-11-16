@@ -112,8 +112,7 @@
 		[self setHasSshfs:YES];
 	} // eof if()
 	
-	NSString *statusItemImgPath = [mainBundle pathForResource:@"drive_web" ofType:@"png"];
-	statusItemImage = [[NSImage alloc] initWithContentsOfFile:statusItemImgPath];
+    NSImage *statusItemImage = [NSImage imageNamed:@"drive_web"];
 	
     statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
     [statusItem setMenu:[self statusItemMenu]];
