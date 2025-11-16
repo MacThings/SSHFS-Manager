@@ -73,28 +73,37 @@
     if necessary.)
  */
 
-- (NSPersistentStoreCoordinator *) persistentStoreCoordinator {
-
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     if (persistentStoreCoordinator != nil) {
         return persistentStoreCoordinator;
     }
 
-    NSFileManager *fileManager;
-    NSString *applicationSupportFolder = nil;
-    NSURL *url;
-    NSError *error;
-    
-    fileManager = [NSFileManager defaultManager];
-    applicationSupportFolder = [self applicationSupportFolder];
-    if ( ![fileManager fileExistsAtPath:applicationSupportFolder isDirectory:NULL] ) {
-        [fileManager createDirectoryAtPath:applicationSupportFolder attributes:nil];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *applicationSupportFolder = [self applicationSupportFolder];
+    BOOL isDir = NO;
+    NSError *dirError = nil;
+
+    // Prüfe, ob der Pfad existiert und ein Verzeichnis ist
+    if (![fileManager fileExistsAtPath:applicationSupportFolder isDirectory:&isDir] || !isDir) {
+        // Verzeichnis anlegen, falls es fehlt
+        BOOL created = [fileManager createDirectoryAtPath:applicationSupportFolder
+                               withIntermediateDirectories:YES
+                                                attributes:nil
+                                                     error:&dirError];
+        if (!created) {
+            [[NSApplication sharedApplication] presentError:dirError];
+            return nil; // Fehlerfall: Abbruch und nil zurückgeben
+        }
     }
+
+    NSURL *url = [NSURL fileURLWithPath:[applicationSupportFolder stringByAppendingPathComponent:@"SSHFS_Manager.xml"]];
+    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     
-    url = [NSURL fileURLWithPath: [applicationSupportFolder stringByAppendingPathComponent: @"SSHFS_Manager.xml"]];
-    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
-    if (![persistentStoreCoordinator addPersistentStoreWithType:NSXMLStoreType configuration:nil URL:url options:nil error:&error]){
+    NSError *error = nil;
+    if (![persistentStoreCoordinator addPersistentStoreWithType:NSXMLStoreType configuration:nil URL:url options:nil error:&error]) {
         [[NSApplication sharedApplication] presentError:error];
-    }    
+        return nil; // Fehlerfall: nil zurückgeben
+    }
 
     return persistentStoreCoordinator;
 }
@@ -105,19 +114,20 @@
     bound to the persistent store coordinator for the application.) 
  */
  
-- (NSManagedObjectContext *) managedObjectContext {
+- (NSManagedObjectContext *)managedObjectContext {
     if (managedObjectContext != nil) {
         return managedObjectContext;
     }
 
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        managedObjectContext = [[NSManagedObjectContext alloc] init];
-        [managedObjectContext setPersistentStoreCoordinator: coordinator];
+        managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     
     return managedObjectContext;
 }
+
 
 
 /**
@@ -177,10 +187,16 @@
 
                 else {
 					
-                    int alertReturn = NSRunAlertPanel(nil, @"Could not save changes while quitting. Quit anyway?" , @"Quit anyway", @"Cancel", nil);
-                    if (alertReturn == NSAlertAlternateReturn) {
-                        reply = NSTerminateCancel;	
+                    NSAlert *alert = [[NSAlert alloc] init];
+                    [alert setMessageText:@"Could not save changes while quitting. Quit anyway?"];
+                    [alert addButtonWithTitle:@"Quit anyway"];  // Erster Button - Rückgabewert NSAlertFirstButtonReturn
+                    [alert addButtonWithTitle:@"Cancel"];       // Zweiter Button - Rückgabewert NSAlertSecondButtonReturn
+
+                    NSModalResponse response = [alert runModal];
+                    if (response == NSAlertSecondButtonReturn) {
+                        reply = NSTerminateCancel;
                     }
+
                 }
             }
         } 
@@ -200,31 +216,36 @@
  
 - (void) dealloc {
 
-    [managedObjectContext release], managedObjectContext = nil;
-    [persistentStoreCoordinator release], persistentStoreCoordinator = nil;
-    [managedObjectModel release], managedObjectModel = nil;
+    (void)([managedObjectContext release]), managedObjectContext = nil;
+    (void)([persistentStoreCoordinator release]), persistentStoreCoordinator = nil;
+    (void)([managedObjectModel release]), managedObjectModel = nil;
     [super dealloc];
 }
 
--(BOOL)windowShouldClose:(NSNotification *)notification {
-	NSError *error;
+- (BOOL)windowShouldClose:(NSNotification *)notification {
+    NSError *error;
     BOOL reply = YES;
-    
+
     if (managedObjectContext != nil) {
         if ([managedObjectContext commitEditing]) {
-            if (([managedObjectContext hasChanges]) && ([managedObjectContext save:&error] == NO)) {
-				int alertReturn = NSRunAlertPanel(nil, @"There were errors while saving changes. Discard changes?" , @"Discard", @"Cancel", nil);
-				if (alertReturn == NSAlertAlternateReturn) {
-					reply = NO;
-				} else {
-					[managedObjectContext discardEditing];
-				} // eof if()
-            } // eof if()
+            if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+                NSAlert *alert = [[NSAlert alloc] init];
+                [alert setMessageText:@"There were errors while saving changes. Discard changes?"];
+                [alert addButtonWithTitle:@"Discard"]; // Erster Button = NSAlertFirstButtonReturn
+                [alert addButtonWithTitle:@"Cancel"];  // Zweiter Button = NSAlertSecondButtonReturn
+
+                NSModalResponse response = [alert runModal];
+                if (response == NSAlertSecondButtonReturn) {
+                    reply = NO;
+                } else {
+                    [managedObjectContext discardEditing];
+                }
+            }
         } else {
             reply = NO;
-        } // eof if()
-    } // eof if()
-    
+        }
+    }
+
     return reply;
 } // eof windowWillClose:
 @end
