@@ -140,12 +140,15 @@
 @synthesize lastMountedLocalPath;
 
 -(void)tabChangedFrom:(NSString *)oldTab to:(NSString *)newTab {
-	if ([newTab isEqualToString:@"Shares"]) {
-		[shareDrawer open];
-		[self sharesSelectionChangedFrom:nil to:nil];
-	} else {
-		[shareDrawer close];
-	} // eof if()
+    if ([newTab isEqualToString:@"Shares"]) {
+        // Setze die Breite des Drawers auf 300 Punkte
+        NSSize drawerSize = NSMakeSize(400, [shareDrawer contentSize].height);
+        [shareDrawer setContentSize:drawerSize];
+        [shareDrawer open];
+        [self sharesSelectionChangedFrom:nil to:nil];
+    } else {
+        [shareDrawer close];
+    } // eof if()
 } // tabChangedFrom:to:
 
 -(void)sharesSelectionChangedFrom:(id)oldIndex to:(id)newIndex {

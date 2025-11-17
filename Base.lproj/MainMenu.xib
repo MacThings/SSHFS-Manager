@@ -22,7 +22,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="0.0" y="436" width="509" height="342"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2056" height="1254"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1169"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="509" height="342"/>
@@ -167,7 +167,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Eyc-at-A0q">
                                                 <rect key="frame" x="1" y="1" width="427" height="236"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="418" id="417">
                                                         <rect key="frame" x="0.0" y="0.0" width="427" height="208"/>
@@ -357,7 +357,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="243" y="-337"/>
+            <point key="canvasLocation" x="204" y="-571"/>
         </menu>
         <customObject id="620" customClass="MLLoginItemsManager"/>
         <customObject id="205" userLabel="SSHFS_Manager_AppDelegate" customClass="SSHFS_Manager_AppDelegate">
@@ -432,11 +432,11 @@
             <nil key="positiveInfinitySymbol"/>
         </numberFormatter>
         <customView id="452" userLabel="Drawer Content View">
-            <rect key="frame" x="0.0" y="0.0" width="300" height="284"/>
+            <rect key="frame" x="0.0" y="0.0" width="400" height="284"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="496">
-                    <rect key="frame" x="142" y="20" width="138" height="22"/>
+                    <rect key="frame" x="142" y="20" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="497">
                         <font key="font" metaFont="system"/>
@@ -452,19 +452,8 @@
                         <outlet property="nextKeyView" destination="480" id="544"/>
                     </connections>
                 </textField>
-                <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492">
-                    <rect key="frame" x="256" y="81" width="24" height="24"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRevealFreestandingTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="493">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <action selector="doBrowseLocalPath:" target="357" id="582"/>
-                    </connections>
-                </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="490">
-                    <rect key="frame" x="142" y="82" width="106" height="22"/>
+                    <rect key="frame" x="142" y="82" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="491">
                         <font key="font" metaFont="system"/>
@@ -481,7 +470,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="494">
-                    <rect key="frame" x="142" y="52" width="138" height="22"/>
+                    <rect key="frame" x="142" y="52" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="495">
                         <font key="font" metaFont="system"/>
@@ -498,7 +487,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="488">
-                    <rect key="frame" x="142" y="114" width="138" height="22"/>
+                    <rect key="frame" x="142" y="114" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Home Directory" drawsBackground="YES" id="489">
                         <font key="font" metaFont="system"/>
@@ -516,7 +505,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="486">
-                    <rect key="frame" x="142" y="146" width="138" height="22"/>
+                    <rect key="frame" x="142" y="146" width="70" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="487">
                         <font key="font" metaFont="system"/>
@@ -534,7 +523,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="484">
-                    <rect key="frame" x="142" y="178" width="138" height="22"/>
+                    <rect key="frame" x="142" y="178" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="485">
                         <font key="font" metaFont="system"/>
@@ -551,7 +540,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="482">
-                    <rect key="frame" x="142" y="210" width="138" height="22"/>
+                    <rect key="frame" x="142" y="210" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="483">
                         <font key="font" metaFont="system"/>
@@ -568,7 +557,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="480">
-                    <rect key="frame" x="142" y="242" width="138" height="22"/>
+                    <rect key="frame" x="142" y="242" width="210" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="481">
                         <font key="font" metaFont="system"/>
@@ -656,8 +645,19 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492">
+                    <rect key="frame" x="358" y="81" width="24" height="24"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="magnifyingglass.circle.fill" catalog="system" imagePosition="only" alignment="center" state="on" borderStyle="border" inset="2" id="493">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="doBrowseLocalPath:" target="357" id="582"/>
+                    </connections>
+                </button>
             </subviews>
-            <point key="canvasLocation" x="184" y="-267"/>
+            <point key="canvasLocation" x="159" y="-267"/>
         </customView>
         <drawer trailingOffset="15" id="453">
             <size key="contentSize" width="300" height="284"/>
@@ -675,6 +675,6 @@
     <resources>
         <image name="NSAddTemplate" width="18" height="17"/>
         <image name="NSRemoveTemplate" width="18" height="5"/>
-        <image name="NSRevealFreestandingTemplate" width="20" height="20"/>
+        <image name="magnifyingglass.circle.fill" catalog="system" width="15" height="15"/>
     </resources>
 </document>
