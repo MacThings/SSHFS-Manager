@@ -51,6 +51,32 @@
 	return self;
 } // eof init
 
+- (BOOL)isMacFUSEInstalled {
+    NSArray *paths = @[
+        @"/usr/local/lib/libfuse.dylib",
+        @"/usr/local/lib/libfuse.2.dylib",
+        @"/Library/Filesystems/macfuse.fs"
+    ];
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+
+    for (NSString *path in paths) {
+        if (![fm fileExistsAtPath:path]) {
+            // mindestens eine fehlt → macFUSE nicht vollständig installiert
+            return NO;
+        }
+    }
+    // alle existieren
+    return YES;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    fprintf(stderr, ">>> entered applicationDidFinishLaunching\n");
+
+        BOOL haveFuse = [self isMacFUSEInstalled];
+        fprintf(stderr, "FUSE status: %s\n", haveFuse ? "YES" : "NO");
+}
+
 -(void)dealloc {
 	[self removeObserver:self forKeyPath:@"currentTab"];
 	[sharesController removeObserver:self forKeyPath:@"selectionIndex"];
@@ -119,9 +145,9 @@
     statusItem.button.image = statusItemImage;
     statusItem.button.appearsDisabled = NO;
     // Optional: Menu-Highlight, z. B. durch Wechsel der Bilder, oder wie folgt:
-    statusItem.button.highlighted = YES; // Gibt's nur lesend, nicht schreibend!
+    //statusItem.button.highlighted = YES; // Gibt's nur lesend, nicht schreibend!
     // Alternativ: Button-Highlighting wie folgt setzen (empfohlen):
-    statusItem.button.cell.highlighted = NSContentsCellMask | NSPushInCellMask;
+    //statusItem.button.cell.highlighted = NSContentsCellMask | NSPushInCellMask;
     [statusItem setLength:25.0];
     [statusItem retain];
 	
@@ -183,113 +209,131 @@
 }
 
 -(NSMenu *)statusItemMenu {
-	NSMenu *myStatusItemMenu = [[[NSMenu alloc] init] autorelease];
-	[myStatusItemMenu setAutoenablesItems:NO];
-	
-	NSAutoreleasePool *autoreleasePool = [[NSAutoreleasePool alloc] init];
-	
-	NSManagedObjectContext *sharesContext = [appDelegate managedObjectContext];
-	NSManagedObjectModel *shareModel = [appDelegate managedObjectModel];
-	NSEntityDescription *shareEntity = [[shareModel entities] objectAtIndex:0];
-	
-	NSFetchRequest *sharesFetchRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[sharesFetchRequest setPredicate:nil];
-	NSSortDescriptor *sharesSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
-	[sharesFetchRequest setSortDescriptors:[NSArray arrayWithObject:sharesSortDescriptor]];
-	[sharesFetchRequest setEntity:shareEntity];
-	
-	NSError *myError = nil;
-	NSArray *currentShares = [sharesContext executeFetchRequest:sharesFetchRequest error:&myError];
-	
-    if (myError != nil) {
-        [[NSApplication sharedApplication] presentError:myError];
-        [[NSApplication sharedApplication] terminate:nil];
+    NSMenu *menu = [[NSMenu alloc] init];
+    [menu setAutoenablesItems:NO];
+
+    // 1️⃣ Prüfen, ob macFUSE vollständig installiert ist
+    BOOL fuseInstalled = [self isMacFUSEInstalled]; // prüft alle 3 Dateien
+
+    if (!fuseInstalled) {
+        // FUSE fehlt: nur Warnung + Einstellungen + Beenden
+        NSMenuItem *fuseMissingItem = [[NSMenuItem alloc] initWithTitle:@"macFUSE fehlt!"
+                                                                  action:nil
+                                                           keyEquivalent:@""];
+        // Rot färben
+        NSDictionary *attrs = @{NSForegroundColorAttributeName: [NSColor redColor]};
+        NSAttributedString *attrTitle = [[NSAttributedString alloc] initWithString:@"macFUSE fehlt!"
+                                                                        attributes:attrs];
+        [fuseMissingItem setAttributedTitle:attrTitle];
+        [fuseMissingItem setEnabled:NO];
+        [menu addItem:fuseMissingItem];
+
+        [menu addItem:[NSMenuItem separatorItem]];
+
+        // Einstellungen
+        NSMenuItem *prefs = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences", nil)
+                                                       action:@selector(showPreferences:)
+                                                keyEquivalent:@","];
+        [prefs setTarget:self];
+        [menu addItem:prefs];
+
+        [menu addItem:[NSMenuItem separatorItem]];
+
+        // Beenden
+        NSMenuItem *quit = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", nil)
+                                                      action:@selector(doQuit:)
+                                               keyEquivalent:@"q"];
+        [quit setTarget:self];
+        [menu addItem:quit];
+
+        return menu;
     }
-	
-	if ([currentShares count] == 0) {
-		NSMenuItem *noVolumesItem = [[[NSMenuItem alloc] initWithTitle:@"No volumes" action:nil keyEquivalent:@""] autorelease];
-		[noVolumesItem setEnabled:NO];
-		[myStatusItemMenu addItem:noVolumesItem];
-	} else {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray<NSURL *> *mountedVolumeURLs = [fileManager mountedVolumeURLsIncludingResourceValuesForKeys:nil options:0];
 
-        NSMutableArray<NSString *> *mountedFileSystems = [NSMutableArray array];
-        for (NSURL *volumeURL in mountedVolumeURLs) {
-            NSString *path = [volumeURL path];
-            if (path) {
-                [mountedFileSystems addObject:path];
+    // ----- Wenn FUSE vollständig installiert ist -----
+    NSManagedObjectContext *sharesContext = [appDelegate managedObjectContext];
+    NSManagedObjectModel *shareModel = [appDelegate managedObjectModel];
+    NSEntityDescription *shareEntity = [[shareModel entities] objectAtIndex:0];
+
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:shareEntity];
+    [fetchRequest setSortDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]];
+
+    NSError *error = nil;
+    NSArray *shares = [sharesContext executeFetchRequest:fetchRequest error:&error];
+    if (error) {
+        [[NSApplication sharedApplication] presentError:error];
+        [[NSApplication sharedApplication] terminate:nil];
+        return nil;
+    }
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray<NSURL *> *mountedVolumeURLs = [fileManager mountedVolumeURLsIncludingResourceValuesForKeys:nil options:0];
+    NSMutableArray<NSString *> *mountedFileSystems = [NSMutableArray array];
+    for (NSURL *volumeURL in mountedVolumeURLs) {
+        NSString *path = [volumeURL path];
+        if (path) [mountedFileSystems addObject:path];
+    }
+
+    if (shares.count == 0) {
+        NSMenuItem *noVolumes = [[NSMenuItem alloc] initWithTitle:@"No volumes"
+                                                           action:nil
+                                                    keyEquivalent:@""];
+        [noVolumes setEnabled:NO];
+        [menu addItem:noVolumes];
+    } else {
+        for (NSManagedObject *share in shares) {
+            BTHMenuItem *item = [[BTHMenuItem alloc] initWithTitle:[share valueForKey:@"name"]
+                                                            action:@selector(doMountShare:)
+                                                     keyEquivalent:@""];
+            [item setTarget:self];
+
+            NSMutableDictionary *itemData = [NSMutableDictionary dictionary];
+            [itemData setObject:[share valueForKey:@"host"] forKey:@"host"];
+            [itemData setObject:[share valueForKey:@"login"] forKey:@"login"];
+            [itemData setObject:[share valueForKey:@"options"] forKey:@"options"];
+            [itemData setObject:[share valueForKey:@"port"] forKey:@"port"];
+            NSString *remotePath = [share valueForKey:@"remotePath"];
+            if (remotePath) [itemData setObject:remotePath forKey:@"remotePath"];
+            [itemData setObject:[share valueForKey:@"volumeName"] forKey:@"volumeName"];
+            NSString *localPath = [share valueForKey:@"localPath"];
+            [itemData setObject:localPath forKey:@"localPath"];
+
+            if ([mountedFileSystems containsObject:localPath] ||
+                [localPath isEqualToString:[self lastMountedLocalPath]]) {
+                [item setState:NSControlStateValueOn];
+            } else {
+                [item setState:NSControlStateValueOff];
             }
+
+            [item bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
+            [item bind:@"enabled2"
+               toObject:self
+            withKeyPath:@"isWorking"
+                options:@{NSValueTransformerNameBindingOption: NSNegateBooleanTransformerName}];
+
+            [item setItemData:itemData];
+            [menu addItem:item];
         }
+    }
 
-        // Nun kannst du mountedFileSystems weiterverwenden, analog zum alten mountedLocalVolumePaths
+    // Separator
+    [menu addItem:[NSMenuItem separatorItem]];
 
-        NSEnumerator *sharesEnum = [currentShares objectEnumerator];
-        NSManagedObject *currentObject = nil;
-        NSMutableDictionary *currentData = nil;
-		while((currentObject = [sharesEnum nextObject])) {
-			BTHMenuItem *currentShareItem = [[[BTHMenuItem alloc] initWithTitle:[currentObject valueForKey:@"name"] action:@selector(doMountShare:) keyEquivalent:@""] autorelease];
-			[currentShareItem setTarget:self];
-			currentData = [NSMutableDictionary dictionaryWithCapacity:1];
-			[currentData setObject:[currentObject valueForKey:@"host"] forKey:@"host"];
-			[currentData setObject:[currentObject valueForKey:@"login"] forKey:@"login"];
-			[currentData setObject:[currentObject valueForKey:@"options"] forKey:@"options"];
-			[currentData setObject:[currentObject valueForKey:@"port"] forKey:@"port"];
-			
-			NSString *remotePath = [currentObject valueForKey:@"remotePath"];
-			if (remotePath != nil) {
-				[currentData setObject:remotePath forKey:@"remotePath"];
-			} // eof if()
-			
-			[currentData setObject:[currentObject valueForKey:@"volumeName"] forKey:@"volumeName"];
-			
-			NSString *localPath = [currentObject valueForKey:@"localPath"];
-			[currentData setObject:localPath forKey:@"localPath"];
-			if (([mountedFileSystems containsObject:localPath]) || ([localPath isEqualToString:[self lastMountedLocalPath]] == YES)) {
-                [currentShareItem setState:NSControlStateValueOn];
-			} else {
-                [currentShareItem setState:NSControlStateValueOff];
-			} // eof if()
-			
-			[currentShareItem bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
-			[currentShareItem bind:@"enabled2"
-						  toObject:self
-					   withKeyPath:@"isWorking"
-						   options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
-			
-			[currentShareItem setItemData:currentData];
-			[myStatusItemMenu addItem:currentShareItem];
-		} // eof while()
-	} // eof if()
-	
-	NSMenuItem *separatorItem = [NSMenuItem separatorItem];
-	[myStatusItemMenu addItem:separatorItem];
-	
-    NSMenuItem *preferencesMenuItem =
-        [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences", nil)
-                                    action:@selector(showPreferences:)
-                             keyEquivalent:@""] autorelease];
-    [preferencesMenuItem setTarget:self];
-    [myStatusItemMenu addItem:preferencesMenuItem];
+    // Preferences
+    NSMenuItem *prefs = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences", nil)
+                                                   action:@selector(showPreferences:)
+                                            keyEquivalent:@","];
+    [prefs setTarget:self];
+    [menu addItem:prefs];
 
-    // Optional:
-    //NSMenuItem *aboutMenuItem =
-    //    [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"About", nil)
-    //                                action:@selector(showAbout:)
-    //                         keyEquivalent:@""] autorelease];
-    //[aboutMenuItem setTarget:self];
-    //[myStatusItemMenu addItem:aboutMenuItem];
+    // Quit
+    NSMenuItem *quit = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", nil)
+                                                  action:@selector(doQuit:)
+                                           keyEquivalent:@"q"];
+    [quit setTarget:self];
+    [menu addItem:quit];
 
-    NSMenuItem *quitMenuItem =
-        [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", nil)
-                                    action:@selector(doQuit:)
-                             keyEquivalent:@""] autorelease];
-    [quitMenuItem setTarget:self];
-    [myStatusItemMenu addItem:quitMenuItem];
-	
-	[autoreleasePool drain];
-	
-	return myStatusItemMenu;
+    return menu;
 } // eof buildStatusItemMenu
 
 -(void)refreshStatusItemMenu {

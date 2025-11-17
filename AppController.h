@@ -83,4 +83,5 @@
 -(IBAction)showPreferences:(id)sender;
 -(IBAction)showAbout:(id)sender;
 -(IBAction)doQuit:(id)sender;
+- (BOOL)isMacFUSEInstalled;
 @end

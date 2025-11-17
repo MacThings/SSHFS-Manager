@@ -41,6 +41,19 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2A0525642ECB9F0D0099D78A /* Copy sshfs */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = bin;
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			name = "Copy sshfs";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0C3D623111F830D400A2F051 /* MLLoginItemsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MLLoginItemsManager.h; sourceTree = "<group>"; };
 		0C3D623211F830D400A2F051 /* MLLoginItemsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MLLoginItemsManager.m; sourceTree = "<group>"; };
@@ -68,6 +81,41 @@
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* SSHFS Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SSHFS Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2A0525672ECB9F300099D78A /* Exceptions for "bin" folder in "SSHFS Manager" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				sshfs,
+			);
+			target = 8D1107260486CEB800E47090 /* SSHFS Manager */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		2A0525662ECB9F1D0099D78A /* Exceptions for "bin" folder in "Copy sshfs" phase from "SSHFS Manager" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				sshfs = (CodeSignOnCopy, );
+			};
+			buildPhase = 2A0525642ECB9F0D0099D78A /* Copy sshfs */;
+			membershipExceptions = (
+				sshfs,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2A0525612ECB9EC30099D78A /* bin */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2A0525672ECB9F300099D78A /* Exceptions for "bin" folder in "SSHFS Manager" target */,
+				2A0525662ECB9F1D0099D78A /* Exceptions for "bin" folder in "Copy sshfs" phase from "SSHFS Manager" target */,
+			);
+			path = bin;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
@@ -119,6 +167,7 @@
 		29B97314FDCFA39411CA2CEA /* SSHFS Manager */ = {
 			isa = PBXGroup;
 			children = (
+				2A0525612ECB9EC30099D78A /* bin */,
 				2A583EAB2ECA330F00E7BCC0 /* Assets.xcassets */,
 				2A0524B82ECB68740099D78A /* sshfs-manager.html */,
 				7756732906782D8800D1FEB8 /* Models */,
@@ -181,11 +230,15 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				2A0525642ECB9F0D0099D78A /* Copy sshfs */,
 				2A583EAA2ECA30C300E7BCC0 /* Prepare Build */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2A0525612ECB9EC30099D78A /* bin */,
 			);
 			name = "SSHFS Manager";
 			productInstallPath = "$(HOME)/Applications";
