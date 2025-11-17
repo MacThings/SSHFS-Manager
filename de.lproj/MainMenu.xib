@@ -253,7 +253,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>
-                                        <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="552">
+                                        <button hidden="YES" imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="552">
                                             <rect key="frame" x="378" y="16" width="68" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="smallSquare" title="Speichern" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="553">
@@ -390,6 +390,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="16" y="447"/>
         </menu>
         <customObject id="357" customClass="AppController">
             <connections>
