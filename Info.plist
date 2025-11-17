@@ -35,6 +35,6 @@
 	<key>SUScheduledCheckInterval</key>
 	<integer>1</integer>
 	<key>LSUIElement</key>
-	<false/>
+	<true/>
 </dict>
 </plist>
