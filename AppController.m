@@ -70,13 +70,6 @@
     return YES;
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    fprintf(stderr, ">>> entered applicationDidFinishLaunching\n");
-
-        BOOL haveFuse = [self isMacFUSEInstalled];
-        fprintf(stderr, "FUSE status: %s\n", haveFuse ? "YES" : "NO");
-}
-
 -(void)dealloc {
 	[self removeObserver:self forKeyPath:@"currentTab"];
 	[sharesController removeObserver:self forKeyPath:@"selectionIndex"];
@@ -131,12 +124,25 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedObjectContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:nil];
 	
-	NSString *sshfsPath = [preferences valueForKey:@"sshfsPath"];
-	if ((sshfsPath == nil) || ([sshfsPath isEqualToString:@""] == YES)) {
-		[self findSshfs];
-	} else {
-		[self setHasSshfs:YES];
-	} // eof if()
+    NSString *sshfsPath = [[NSBundle mainBundle] pathForResource:@"sshfs" ofType:@"" inDirectory:@"bin"];
+    
+    
+    
+    // Entferne alten Pfad, damit die App den Bundle-Pfad benutzt
+    [preferences removeObjectForKey:@"sshfsPath"];
+    [preferences synchronize];
+    
+    //NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+    NSString *bundleSshfs = [[NSBundle mainBundle] pathForResource:@"sshfs" ofType:@"" inDirectory:@"bin"];
+
+    if ([[NSFileManager defaultManager] isExecutableFileAtPath:bundleSshfs]) {
+        [preferences setValue:bundleSshfs forKey:@"sshfsPath"];
+        [preferences synchronize];
+        [self setHasSshfs:YES];
+    } else {
+        NSLog(@"SSHFS binary not found or not executable at path: %@", bundleSshfs);
+        [self setHasSshfs:NO];
+    }
 	
     NSImage *statusItemImage = [NSImage imageNamed:@"drive_web"];
 	
@@ -217,12 +223,12 @@
 
     if (!fuseInstalled) {
         // FUSE fehlt: nur Warnung + Einstellungen + Beenden
-        NSMenuItem *fuseMissingItem = [[NSMenuItem alloc] initWithTitle:@"macFUSE fehlt!"
+        NSMenuItem *fuseMissingItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"macFUSE is missing!", nil)
                                                                   action:nil
                                                            keyEquivalent:@""];
         // Rot färben
         NSDictionary *attrs = @{NSForegroundColorAttributeName: [NSColor redColor]};
-        NSAttributedString *attrTitle = [[NSAttributedString alloc] initWithString:@"macFUSE fehlt!"
+        NSAttributedString *attrTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"macFUSE is missing!", nil)
                                                                         attributes:attrs];
         [fuseMissingItem setAttributedTitle:attrTitle];
         [fuseMissingItem setEnabled:NO];
@@ -342,29 +348,21 @@
 } // eof refreshStatusItemMenu
 
 -(void)findSshfs {
-	if (currentTask != nil) {
-        [currentTask terminate];
-		[currentTask release];
-		currentTask = nil;
-	} // eof if()
-	
-	currentTask = [[NSTask alloc] init];
-	[currentTask setCurrentDirectoryPath:[@"~" stringByExpandingTildeInPath]];
-	[currentTask setLaunchPath:@"/usr/bin/which"];
-	
-	NSMutableArray *args = [NSMutableArray array];
-	[args addObject:@"sshfs"];
-	[currentTask setArguments:args];
-	
-	NSPipe *standardOutput = [[[NSPipe alloc] init] autorelease];
-	[currentTask setStandardOutput:standardOutput];
-	
-	[currentTask launch];
-	if ([currentTask isRunning] == YES) {
-		sshfsFinderPID = [currentTask processIdentifier];
-		[self setIsWorking:YES];
-	} // eof if()
-} // eof findSshfs
+    // Pfad zur gebündelten Binary im Bundle
+    NSString *sshfsPath = [[NSBundle mainBundle] pathForResource:@"sshfs" ofType:@"" inDirectory:@"bin"];
+
+    if (sshfsPath == nil || ![[NSFileManager defaultManager] isExecutableFileAtPath:sshfsPath]) {
+        NSLog(@"SSHFS binary not found or not executable at path: %@", sshfsPath);
+        [self setHasSshfs:NO];
+        return;
+    }
+
+    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+    [preferences setValue:sshfsPath forKey:@"sshfsPath"];
+    [preferences synchronize];
+    
+    [self setHasSshfs:YES];
+}// eof findSshfs
 
 -(void)checkATaskStatus:(NSNotification *)aNotification {
 	if ([[aNotification object] processIdentifier] == sshfsFinderPID) {
@@ -447,50 +445,58 @@
 } // eof testTimer
 
 -(IBAction)doMountShare:(id)sender {
-    if ([sender state] == NSControlStateValueOn) {
-		return;
-	} // eof if()
-	
-	NSDictionary *itemData = [sender itemData];
-	if (itemData != nil) {
-		NSString *remotePath = [itemData objectForKey:@"remotePath"];
-		if (remotePath == nil) {
-			remotePath = @"";
-		} // eof if()
-		
-		NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-		
-		if (currentTask != nil) {
-			[currentTask release];
-			currentTask = nil;
-		} // eof if()
-		
-		currentTask = [[NSTask alloc] init];
-		[currentTask setCurrentDirectoryPath:[@"~" stringByExpandingTildeInPath]];
-		[currentTask setLaunchPath:[preferences valueForKey:@"sshfsPath"]];
-		
-		NSMutableArray *args = [NSMutableArray array];
-		[args addObject:@"-p"];
-		[args addObject:[NSString stringWithFormat:@"%d", [[itemData objectForKey:@"port"] intValue]]];
-		[args addObject:[NSString stringWithFormat:@"%@@%@:%@",
-						[itemData objectForKey:@"login"],
-						[itemData objectForKey:@"host"],
-						remotePath]];
-		[args addObject:[NSString stringWithFormat:@"%@", [itemData objectForKey:@"localPath"]]];
-		[args addObject:[NSString stringWithFormat:@"-o%@,volname=%@",
-						[itemData objectForKey:@"options"],
-						[itemData objectForKey:@"volumeName"]]];
-		 
-		[currentTask setArguments:args];
-		
-		[currentTask launch];
-		
-		if ([currentTask isRunning] == YES) {
-			shareMounterPID = [currentTask processIdentifier];
-			[self setIsWorking:YES];
-			[self setLastMountedLocalPath:[itemData objectForKey:@"localPath"]];
-		} // eof if()
-	} // eof if()
+    if ([sender state] == NSControlStateValueOn) return;
+
+        NSDictionary *itemData = [sender itemData];
+        if (!itemData) return;
+
+        NSString *remotePath = [itemData objectForKey:@"remotePath"] ?: @"";
+        NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+        NSString *sshfsPath = [preferences valueForKey:@"sshfsPath"];
+
+        // Sicherheit: Pfad muss existieren und ausführbar sein
+        if (sshfsPath == nil || ![[NSFileManager defaultManager] isExecutableFileAtPath:sshfsPath]) {
+            NSLog(@"SSHFS binary not found or not executable at path: %@", sshfsPath);
+            [self setHasSshfs:NO];
+            return;
+        }
+
+        if (currentTask != nil) {
+            [currentTask release];
+            currentTask = nil;
+        }
+
+        currentTask = [[NSTask alloc] init];
+        [currentTask setCurrentDirectoryPath:[@"~" stringByExpandingTildeInPath]];
+        [currentTask setLaunchPath:sshfsPath];
+
+        NSMutableArray *args = [NSMutableArray array];
+        [args addObject:@"-p"];
+        [args addObject:[NSString stringWithFormat:@"%d", [[itemData objectForKey:@"port"] intValue]]];
+        [args addObject:[NSString stringWithFormat:@"%@@%@:%@",
+                         [itemData objectForKey:@"login"],
+                         [itemData objectForKey:@"host"],
+                         remotePath]];
+        [args addObject:[itemData objectForKey:@"localPath"]];
+        [args addObject:[NSString stringWithFormat:@"-o%@,volname=%@",
+                         [itemData objectForKey:@"options"],
+                         [itemData objectForKey:@"volumeName"]]];
+
+        [currentTask setArguments:args];
+
+        @try {
+            [currentTask launch];
+        } @catch (NSException *exception) {
+            NSLog(@"Failed to launch SSHFS: %@, reason: %@", sshfsPath, exception.reason);
+            [self setHasSshfs:NO];
+            return;
+        }
+
+        if ([currentTask isRunning]) {
+            shareMounterPID = [currentTask processIdentifier];
+            [self setIsWorking:YES];
+            [self setLastMountedLocalPath:[itemData objectForKey:@"localPath"]];
+        } // eof if()
 } // eof doMountShare:
 
 - (IBAction)doBrowseLocalPath:(id)sender {
