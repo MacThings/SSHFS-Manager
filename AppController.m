@@ -128,9 +128,7 @@
     
     
     
-    // Entferne alten Pfad, damit die App den Bundle-Pfad benutzt
-    [preferences removeObjectForKey:@"sshfsPath"];
-    [preferences synchronize];
+
     
     //NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
     NSString *bundleSshfs = [[NSBundle mainBundle] pathForResource:@"sshfs" ofType:@"" inDirectory:@"bin"];
@@ -156,6 +154,8 @@
     //statusItem.button.cell.highlighted = NSContentsCellMask | NSPushInCellMask;
     [statusItem setLength:25.0];
     [statusItem retain];
+    
+    self.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 	
 	if ([preferences boolForKey:@"autoUpdate"] == YES) {
 		[self setUpAutoUpdateTimer];
@@ -343,8 +343,10 @@
 } // eof buildStatusItemMenu
 
 -(void)refreshStatusItemMenu {
-	[statusItem setMenu:[self statusItemMenu]];
-	[self setLastMountedLocalPath:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->statusItem setMenu:[self statusItemMenu]];
+        [self setLastMountedLocalPath:nil];
+    });
 } // eof refreshStatusItemMenu
 
 -(void)findSshfs {

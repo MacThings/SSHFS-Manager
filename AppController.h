@@ -61,6 +61,7 @@
 @property BOOL hasSshfs;
 @property BOOL isWorking;
 @property (retain) NSString *lastMountedLocalPath;
+@property (nonatomic, copy) NSString *appVersion;
 
 -(void)tabChangedFrom:(NSString *)oldTab to:(NSString *)newTab;
 -(void)sharesSelectionChangedFrom:(id)oldIndex to:(id)newIndex;
