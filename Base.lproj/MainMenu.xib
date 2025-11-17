@@ -53,7 +53,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="9Jg-S2-FY1">
-                                            <rect key="frame" x="9" y="148" width="445" height="5"/>
+                                            <rect key="frame" x="9" y="140" width="445" height="5"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         </box>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YVJ-zL-nAi">
@@ -145,18 +145,6 @@
                                                 <action selector="checkForUpdates:" target="5hS-kQ-QCQ" id="Hka-bw-bxs"/>
                                             </connections>
                                         </button>
-                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zfp-fq-95q">
-                                            <rect key="frame" x="352" y="186" width="38" height="16"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="VER" id="YjJ-b1-kwz">
-                                                <font key="font" usesAppearanceFont="YES"/>
-                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            </textFieldCell>
-                                            <connections>
-                                                <binding destination="357" name="value" keyPath="appVersion" id="ffC-Ku-slZ"/>
-                                            </connections>
-                                        </textField>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -305,6 +293,18 @@
                             <binding destination="357" name="selectedLabel" keyPath="self.currentTab" id="500"/>
                         </connections>
                     </tabView>
+                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zfp-fq-95q">
+                        <rect key="frame" x="453" y="2" width="38" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="VER" id="YjJ-b1-kwz">
+                            <font key="font" usesAppearanceFont="YES"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="357" name="value" keyPath="appVersion" id="ffC-Ku-slZ"/>
+                        </connections>
+                    </textField>
                 </subviews>
             </view>
             <connections>

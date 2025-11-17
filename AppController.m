@@ -70,6 +70,11 @@
     return YES;
 }
 
+- (void)openFUSEDownloadLink:(id)sender {
+    NSURL *url = [NSURL URLWithString:@"https://github.com/macfuse/macfuse/releases"];
+    [[NSWorkspace sharedWorkspace] openURL:url];
+}
+
 -(void)dealloc {
 	[self removeObserver:self forKeyPath:@"currentTab"];
 	[sharesController removeObserver:self forKeyPath:@"selectionIndex"];
@@ -155,7 +160,7 @@
     [statusItem setLength:25.0];
     [statusItem retain];
     
-    self.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    self.appVersion = [NSString stringWithFormat:@"v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
 	
 	if ([preferences boolForKey:@"autoUpdate"] == YES) {
 		[self setUpAutoUpdateTimer];
@@ -222,17 +227,27 @@
     BOOL fuseInstalled = [self isMacFUSEInstalled]; // prüft alle 3 Dateien
 
     if (!fuseInstalled) {
-        // FUSE fehlt: nur Warnung + Einstellungen + Beenden
+        // FUSE fehlt: Warnung + Link + Einstellungen + Beenden
+
+        // Warnung rot
         NSMenuItem *fuseMissingItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"macFUSE is missing!", nil)
                                                                   action:nil
                                                            keyEquivalent:@""];
-        // Rot färben
         NSDictionary *attrs = @{NSForegroundColorAttributeName: [NSColor redColor]};
         NSAttributedString *attrTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"macFUSE is missing!", nil)
                                                                         attributes:attrs];
         [fuseMissingItem setAttributedTitle:attrTitle];
         [fuseMissingItem setEnabled:NO];
         [menu addItem:fuseMissingItem];
+
+        [menu addItem:[NSMenuItem separatorItem]];
+
+        // Download-Link hinzufügen
+        NSMenuItem *downloadFUSE = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Download macFUSE", nil)
+                                                              action:@selector(openFUSEDownloadLink:)
+                                                       keyEquivalent:@""];
+        [downloadFUSE setTarget:self];
+        [menu addItem:downloadFUSE];
 
         [menu addItem:[NSMenuItem separatorItem]];
 
