@@ -6,10 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		2A05250B2ECB699F0099D78A /* Publish */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 2A05250C2ECB699F0099D78A /* Build configuration list for PBXAggregateTarget "Publish" */;
+			buildPhases = (
+				2A05250F2ECB69A30099D78A /* Publish */,
+			);
+			dependencies = (
+			);
+			name = Publish;
+			packageProductDependencies = (
+			);
+			productName = Publish;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0C3D623311F830D400A2F051 /* MLLoginItemsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C3D623211F830D400A2F051 /* MLLoginItemsManager.m */; };
 		2A0524032ECB445B0099D78A /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 2A0524022ECB445B0099D78A /* Sparkle */; };
-		2A0524B92ECB68740099D78A /* anymacos.html in Resources */ = {isa = PBXBuildFile; fileRef = 2A0524B82ECB68740099D78A /* anymacos.html */; };
 		2A4F73342ECA8B16002F91D3 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A583E522ECA301500E7BCC0 /* AppKit.framework */; };
 		2A4F73372ECA8B18002F91D3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		2A4F73392ECA8B1A002F91D3 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A583E552ECA304A00E7BCC0 /* CoreData.framework */; };
@@ -33,7 +48,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2A0523F52ECB3FC90099D78A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		2A0523F62ECB40850099D78A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		2A0524B82ECB68740099D78A /* anymacos.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = anymacos.html; sourceTree = "<group>"; };
+		2A0524B82ECB68740099D78A /* sshfs-manager.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "sshfs-manager.html"; sourceTree = "<group>"; };
 		2A583E502ECA292C00E7BCC0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2A583E522ECA301500E7BCC0 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2A583E552ECA304A00E7BCC0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -105,7 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				2A583EAB2ECA330F00E7BCC0 /* Assets.xcassets */,
-				2A0524B82ECB68740099D78A /* anymacos.html */,
+				2A0524B82ECB68740099D78A /* sshfs-manager.html */,
 				7756732906782D8800D1FEB8 /* Models */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -187,6 +202,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					2A05250B2ECB699F0099D78A = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
 					8D1107260486CEB800E47090 = {
 						LastSwiftMigration = 2600;
 					};
@@ -209,6 +227,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* SSHFS Manager */,
+				2A05250B2ECB699F0099D78A /* Publish */,
 			);
 		};
 /* End PBXProject section */
@@ -223,13 +242,30 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				2F7446990DB6B7EA00F9684A /* MainMenu.xib in Resources */,
 				4C25417D11F444E00030AF14 /* userDefaults.plist in Resources */,
-				2A0524B92ECB68740099D78A /* anymacos.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2A05250F2ECB69A30099D78A /* Publish */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Publish;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nbash /Volumes/Homeshare/Xcode/sshfs-manager/push.command\n";
+		};
 		2A583EAA2ECA30C300E7BCC0 /* Prepare Build */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -246,7 +282,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n# Ermittelt den aktuellen Benutzer\nSYS_USER=$(id -un)\n\n# Prüfen, ob das Upload-Verzeichnis existiert, und Dateien vorbereiten\nUPLOAD_DIR=\"/Volumes/Homeshare/Xcode/sshfs-manager/upload\"\nif [ -d \"$UPLOAD_DIR\" ]; then\n    # HTML-Datei kopieren\n    cp \"/Users/$SYS_USER/Documents/Xcode/sshfs-manager/DOSBox Buddy/sshfs-manager.html\" \"$UPLOAD_DIR/\"\n    \n    # Codesignieren der App\n    codesign --force --deep --sign \"Apple Development: s.lamprecht@sl-soft.de (85JZW6284R)\" \\\n        \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\"\n    \n    # App als ZIP-Archiv erstellen\n    ditto -c -k --sequesterRsrc --keepParent \\\n        \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\" \"$UPLOAD_DIR/sshfs-manager.zip\"\nfi\n\n# Sicherstellen, dass keine alte Version der App auf dem Desktop existiert\nDESKTOP_APP=\"/Users/$SYS_USER/Desktop/${PRODUCT_NAME}.app\"\nif [ -d \"$DESKTOP_APP\" ]; then\n    rm -rf \"$DESKTOP_APP\"\nfi\n\n# App auf den Desktop kopieren\ncp -a \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\" \"/Users/$SYS_USER/Desktop/\"\n\n# App auf dem Desktop erneut codesignieren\ncodesign --force --deep --sign \"Apple Development: s.lamprecht@sl-soft.de (85JZW6284R)\" \"$DESKTOP_APP\"\n\n\n";
+			shellScript = "#!/bin/bash\n\n# Ermittelt den aktuellen Benutzer\nSYS_USER=$(id -un)\n\n# Prüfen, ob das Upload-Verzeichnis existiert, und Dateien vorbereiten\nUPLOAD_DIR=\"/Volumes/Homeshare/Xcode/sshfs-manager/upload\"\nif [ -d \"$UPLOAD_DIR\" ]; then\n    # HTML-Datei kopieren\n    cp \"/Users/$SYS_USER/Documents/Xcode/SSHFS-Manager/sshfs-manager.html\" \"$UPLOAD_DIR/\"\n    \n    # Codesignieren der App\n    codesign --force --deep --sign \"Apple Development: apple@slsoft.de (85JZW6284R)\" \\\n        \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\"\n    \n    # App als ZIP-Archiv erstellen\n    ditto -c -k --sequesterRsrc --keepParent \\\n        \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\" \"$UPLOAD_DIR/sshfs-manager.zip\"\nfi\n\n# Sicherstellen, dass keine alte Version der App auf dem Desktop existiert\nDESKTOP_APP=\"/Users/$SYS_USER/Desktop/${PRODUCT_NAME}.app\"\nif [ -d \"$DESKTOP_APP\" ]; then\n    rm -rf \"$DESKTOP_APP\"\nfi\n\n# App auf den Desktop kopieren\ncp -a \"${TARGET_BUILD_DIR}/${PRODUCT_NAME}.app\" \"/Users/$SYS_USER/Desktop/\"\n\n# App auf dem Desktop erneut codesignieren\ncodesign --force --deep --sign \"Apple Development: apple@slsoft.de (85JZW6284R)\" \"$DESKTOP_APP\"\n\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -330,7 +366,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15.7;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "sshfs-manager.slsoft.de";
 				PRODUCT_NAME = "SSHFS Manager";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -375,7 +411,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15.7;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "sshfs-manager.slsoft.de";
 				PRODUCT_NAME = "SSHFS Manager";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -465,6 +501,24 @@
 			};
 			name = Release;
 		};
+		2A05250D2ECB699F0099D78A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4ATFWV7M4B;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2A05250E2ECB699F0099D78A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4ATFWV7M4B;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -482,6 +536,15 @@
 			buildConfigurations = (
 				26FC0A890875C7B200E6366F /* Debug */,
 				26FC0A8A0875C7B200E6366F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A05250C2ECB699F0099D78A /* Build configuration list for PBXAggregateTarget "Publish" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A05250D2ECB699F0099D78A /* Debug */,
+				2A05250E2ECB699F0099D78A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
