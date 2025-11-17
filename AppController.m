@@ -161,7 +161,17 @@
     [statusItem retain];
     
     self.appVersion = [NSString stringWithFormat:@"v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
-	
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"sshfs-manager.slsoft.de"];
+    NSDate *lastCheck = [[NSUserDefaults standardUserDefaults] objectForKey:@"SULastCheckTime"];
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+
+    NSString *lastCheckString = lastCheck ? [formatter stringFromDate:lastCheck] : @"Nie";
+
+    self.lastUpdateCheck = lastCheckString;
+    
 	if ([preferences boolForKey:@"autoUpdate"] == YES) {
 		[self setUpAutoUpdateTimer];
 	} // eof if()
