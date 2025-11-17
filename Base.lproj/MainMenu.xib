@@ -146,6 +146,17 @@
                                                 <binding destination="362" name="enabled" keyPath="values.autoUpdate" id="610"/>
                                             </connections>
                                         </textField>
+                                        <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QPZ-2W-k3n">
+                                            <rect key="frame" x="51" y="90" width="177" height="20"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Search for Updates now" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6Xq-Uh-JJq">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="miniSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="checkForUpdates:" target="5hS-kQ-QCQ" id="Hka-bw-bxs"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>
@@ -299,8 +310,9 @@
             <connections>
                 <outlet property="delegate" destination="205" id="207"/>
             </connections>
-            <point key="canvasLocation" x="139" y="142"/>
+            <point key="canvasLocation" x="-254.5" y="146"/>
         </window>
+        <customObject id="5hS-kQ-QCQ" customClass="SPUStandardUpdaterController"/>
         <menu title="MainMenu" systemMenu="main" id="29" userLabel="MainMenu">
             <items>
                 <menuItem title="SSHFS Manager" id="56">
@@ -318,6 +330,12 @@
                             <menuItem title="Preferences…" keyEquivalent="," id="129">
                                 <connections>
                                     <action selector="showPreferences:" target="357" id="624"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Check for Updates…" image="NSRefreshTemplate" id="Sbu-Mf-GfV">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="checkForUpdates:" target="5hS-kQ-QCQ" id="MaQ-MB-XMN"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="143">
@@ -375,12 +393,6 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showPreferences:" target="357" id="361"/>
-                    </connections>
-                </menuItem>
-                <menuItem title="About..." id="353">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="orderFrontStandardAboutPanel:" target="-1" id="625"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Quit" id="355">
@@ -672,9 +684,11 @@
             <nil key="negativeInfinitySymbol"/>
             <nil key="positiveInfinitySymbol"/>
         </numberFormatter>
+        <userDefaultsController representsSharedInstance="YES" id="Kio-WF-OSO"/>
     </objects>
     <resources>
         <image name="NSAddTemplate" width="18" height="17"/>
+        <image name="NSRefreshTemplate" width="17" height="20"/>
         <image name="NSRemoveTemplate" width="18" height="5"/>
         <image name="magnifyingglass.circle.fill" catalog="system" width="15" height="15"/>
     </resources>

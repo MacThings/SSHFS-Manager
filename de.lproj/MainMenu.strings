@@ -24,28 +24,28 @@
 "131.title" = "Services";
 
 /* Class = "NSMenuItem"; title = "Hide SSHFS Manager"; ObjectID = "134"; */
-"134.title" = "Hide SSHFS Manager";
+"134.title" = "SSHFS Manager ausblenden";
 
 /* Class = "NSMenuItem"; title = "Quit SSHFS Manager"; ObjectID = "136"; */
-"136.title" = "Quit SSHFS Manager";
+"136.title" = "SSHFS Manager beenden";
 
 /* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "145"; */
-"145.title" = "Hide Others";
+"145.title" = "Andere ausblenden";
 
 /* Class = "NSMenuItem"; title = "Show All"; ObjectID = "150"; */
-"150.title" = "Show All";
+"150.title" = "Alle zeigen";
 
 /* Class = "NSMenuItem"; title = "No Volumes to mount"; ObjectID = "351"; */
-"351.title" = "No Volumes to mount";
+"351.title" = "Kein Volume zum Mounten";
 
 /* Class = "NSMenuItem"; title = "Preferences..."; ObjectID = "352"; */
-"352.title" = "Preferences...";
+"352.title" = "Einstellungen...";
 
 /* Class = "NSMenuItem"; title = "About..."; ObjectID = "353"; */
-"353.title" = "About...";
+"353.title" = "Über...";
 
 /* Class = "NSMenuItem"; title = "Quit"; ObjectID = "355"; */
-"355.title" = "Quit";
+"355.title" = "Beenden";
 
 /* Class = "NSTabViewItem"; label = "Allgemein"; ObjectID = "378"; */
 "378.label" = "Allgemein";
@@ -157,3 +157,7 @@
 
 /* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "581"; */
 "581.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+"Sbu-Mf-GfV.title" = "Nach Aktualisierungen suchen...";
+
+"6Xq-Uh-JJq.title" = "Nach Aktualisierungen suchen...";
