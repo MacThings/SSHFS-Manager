@@ -1,0 +1,159 @@
+
+/* Class = "NSWindow"; title = "Preferences"; ObjectID = "21"; */
+"21.title" = "Preferences";
+
+/* Class = "NSMenu"; title = "MainMenu"; ObjectID = "29"; */
+"29.title" = "MainMenu";
+
+/* Class = "NSMenuItem"; title = "SSHFS Manager"; ObjectID = "56"; */
+"56.title" = "SSHFS Manager";
+
+/* Class = "NSMenu"; title = "SSHFS Manager"; ObjectID = "57"; */
+"57.title" = "SSHFS Manager";
+
+/* Class = "NSMenuItem"; title = "About SSHFS Manager"; ObjectID = "58"; */
+"58.title" = "About SSHFS Manager";
+
+/* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "129"; */
+"129.title" = "Preferences…";
+
+/* Class = "NSMenu"; title = "Services"; ObjectID = "130"; */
+"130.title" = "Services";
+
+/* Class = "NSMenuItem"; title = "Services"; ObjectID = "131"; */
+"131.title" = "Services";
+
+/* Class = "NSMenuItem"; title = "Hide SSHFS Manager"; ObjectID = "134"; */
+"134.title" = "Hide SSHFS Manager";
+
+/* Class = "NSMenuItem"; title = "Quit SSHFS Manager"; ObjectID = "136"; */
+"136.title" = "Quit SSHFS Manager";
+
+/* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "145"; */
+"145.title" = "Hide Others";
+
+/* Class = "NSMenuItem"; title = "Show All"; ObjectID = "150"; */
+"150.title" = "Show All";
+
+/* Class = "NSMenuItem"; title = "No Volumes to mount"; ObjectID = "351"; */
+"351.title" = "No Volumes to mount";
+
+/* Class = "NSMenuItem"; title = "Preferences..."; ObjectID = "352"; */
+"352.title" = "Preferences...";
+
+/* Class = "NSMenuItem"; title = "About..."; ObjectID = "353"; */
+"353.title" = "About...";
+
+/* Class = "NSMenuItem"; title = "Quit"; ObjectID = "355"; */
+"355.title" = "Quit";
+
+/* Class = "NSTabViewItem"; label = "General"; ObjectID = "378"; */
+"378.label" = "General";
+
+/* Class = "NSTabViewItem"; label = "Shares"; ObjectID = "379"; */
+"379.label" = "Shares";
+
+/* Class = "NSTextFieldCell"; placeholderString = "SSHFS not found"; ObjectID = "385"; */
+"385.placeholderString" = "SSHFS not found";
+
+/* Class = "NSTextFieldCell"; title = "SSHFS Binary Path:"; ObjectID = "387"; */
+"387.title" = "SSHFS Binary Path:";
+
+/* Class = "NSButtonCell"; title = "Check"; ObjectID = "393"; */
+"393.title" = "Check";
+
+/* Class = "NSTextFieldCell"; title = "Automatic share status update:"; ObjectID = "395"; */
+"395.title" = "Automatic share status update:";
+
+/* Class = "NSTextFieldCell"; title = "minute(s)"; ObjectID = "403"; */
+"403.title" = "minute(s)";
+
+/* Class = "NSTextFieldCell"; title = "Launch on login:"; ObjectID = "409"; */
+"409.title" = "Launch on login:";
+
+/* Class = "NSButtonCell"; title = "Check"; ObjectID = "411"; */
+"411.title" = "Check";
+
+/* Class = "NSTextFieldCell"; title = "Update every:"; ObjectID = "413"; */
+"413.title" = "Update every:";
+
+/* Class = "NSTableColumn"; headerCell.title = "Name"; ObjectID = "419"; */
+"419.headerCell.title" = "Name";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Name"; ObjectID = "422"; */
+"422.placeholderString" = "Name";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "422"; */
+"422.title" = "Text Cell";
+
+/* Class = "NSTableColumn"; headerCell.title = "Host"; ObjectID = "430"; */
+"430.headerCell.title" = "Host";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Host"; ObjectID = "431"; */
+"431.placeholderString" = "Host";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "431"; */
+"431.title" = "Text Cell";
+
+/* Class = "NSTableColumn"; headerCell.title = "Volume Name"; ObjectID = "435"; */
+"435.headerCell.title" = "Volume Name";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "436"; */
+"436.title" = "Text Cell";
+
+/* Class = "NSTextFieldCell"; title = "Name:"; ObjectID = "461"; */
+"461.title" = "Name:";
+
+/* Class = "NSTextFieldCell"; title = "Host:"; ObjectID = "463"; */
+"463.title" = "Host:";
+
+/* Class = "NSTextFieldCell"; title = "Login:"; ObjectID = "465"; */
+"465.title" = "Login:";
+
+/* Class = "NSTextFieldCell"; title = "Port:"; ObjectID = "467"; */
+"467.title" = "Port:";
+
+/* Class = "NSTextFieldCell"; title = "Remote path:"; ObjectID = "469"; */
+"469.title" = "Remote path:";
+
+/* Class = "NSTextFieldCell"; title = "Local path:"; ObjectID = "471"; */
+"471.title" = "Local path:";
+
+/* Class = "NSTextFieldCell"; title = "Volume name:"; ObjectID = "473"; */
+"473.title" = "Volume name:";
+
+/* Class = "NSTextFieldCell"; title = "SSHFS Options:"; ObjectID = "475"; */
+"475.title" = "SSHFS Options:";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Home Directory"; ObjectID = "489"; */
+"489.placeholderString" = "Home Directory";
+
+/* Class = "NSButtonCell"; title = "Save"; ObjectID = "553"; */
+"553.title" = "Save";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "569"; */
+"569.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "571"; */
+"571.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "573"; */
+"573.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedIsNilPlaceholder = "Home Directory"; ObjectID = "574"; */
+"574.ibShadowedIsNilPlaceholder" = "Home Directory";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "574"; */
+"574.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "576"; */
+"576.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "578"; */
+"578.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "579"; */
+"579.ibShadowedNoSelectionPlaceholder" = "No Selection";
+
+/* Class = "CocoaBindingsConnection"; ibShadowedNoSelectionPlaceholder = "No Selection"; ObjectID = "581"; */
+"581.ibShadowedNoSelectionPlaceholder" = "No Selection";
