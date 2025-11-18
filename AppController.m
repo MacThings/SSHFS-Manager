@@ -312,29 +312,54 @@
         [menu addItem:noVolumes];
     } else {
         for (NSManagedObject *share in shares) {
-            BTHMenuItem *item = [[BTHMenuItem alloc] initWithTitle:[share valueForKey:@"name"]
+            // Share-Name prüfen
+            NSString *shareName = [share valueForKey:@"name"];
+            if (shareName == nil || [shareName length] == 0) {
+                shareName = NSLocalizedString(@"Unnamed Share", @"Fallback-Name für Shares ohne Namen");
+            }
+
+            BTHMenuItem *item = [[BTHMenuItem alloc] initWithTitle:shareName
                                                             action:nil
                                                      keyEquivalent:@""];
             [item setTarget:self];
 
+            // Lokaler Pfad prüfen
             NSString *localPath = [share valueForKey:@"localPath"];
+            if (localPath == nil || [localPath length] == 0) {
+                localPath = NSLocalizedString(@"No local path", @"Fallback-Name für Shares ohne Pfad");
+            }
+
             BOOL isMounted = [mountedFileSystems containsObject:localPath] ||
                              [localPath isEqualToString:[self lastMountedLocalPath]];
 
             // Action je nach Status
             [item setAction:(isMounted ? @selector(doUnmountShare:) : @selector(doMountShare:))];
 
-            // Item-Daten
+            // Item-Daten sicher setzen
             NSMutableDictionary *itemData = [NSMutableDictionary dictionary];
-            [itemData setObject:[share valueForKey:@"host"] forKey:@"host"];
-            [itemData setObject:[share valueForKey:@"login"] forKey:@"login"];
-            [itemData setObject:[share valueForKey:@"options"] forKey:@"options"];
-            [itemData setObject:[share valueForKey:@"port"] forKey:@"port"];
+
+            NSString *host = [share valueForKey:@"host"];
+            if (host) [itemData setObject:host forKey:@"host"];
+
+            NSString *login = [share valueForKey:@"login"];
+            if (login) [itemData setObject:login forKey:@"login"];
+
+            NSString *options = [share valueForKey:@"options"];
+            if (options) [itemData setObject:options forKey:@"options"];
+
+            NSNumber *port = [share valueForKey:@"port"];
+            if (port) [itemData setObject:port forKey:@"port"];
+
             NSString *remotePath = [share valueForKey:@"remotePath"];
-            if (remotePath) [itemData setObject:remotePath forKey:@"remotePath"];
-            [itemData setObject:[share valueForKey:@"volumeName"] forKey:@"volumeName"];
-            if (localPath) [itemData setObject:localPath forKey:@"localPath"];
+            if (remotePath && [remotePath length] > 0) [itemData setObject:remotePath forKey:@"remotePath"];
+
+            NSString *volumeName = [share valueForKey:@"volumeName"];
+            if (volumeName && [volumeName length] > 0) [itemData setObject:volumeName forKey:@"volumeName"];
+
+            if (localPath && [localPath length] > 0) [itemData setObject:localPath forKey:@"localPath"];
+
             [item setItemData:itemData];
+        
 
             // Icons
             NSImage *greenDot = [NSImage imageNamed:NSImageNameStatusAvailable];
