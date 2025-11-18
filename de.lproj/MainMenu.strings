@@ -66,7 +66,7 @@
 "U11-Bc-aoi.title" = "Autom. Aktualisierung des Shares";
 
 /* Class = "NSTextFieldCell"; title = "Minute(n)"; ObjectID = "403"; */
-"403.title" = "Minute(n)";
+"403.title" = "Sekunde(n)";
 
 /* Class = "NSTextFieldCell"; title = "Beim Anmelden starten"; ObjectID = "409"; */
 "7LL-Et-7s4.title" = "Beim Anmelden starten";

@@ -92,9 +92,10 @@
 	[currentTab release]; currentTab = nil;
 	[lastMountedLocalPath release]; lastMountedLocalPath = nil;
 	
-	if (autoUpdateTimer != nil) {
-		[autoUpdateTimer invalidate]; [autoUpdateTimer release]; autoUpdateTimer = nil;
-	} // eof if()
+    __weak __typeof(self) weakSelf = self;
+    dispatch_source_set_event_handler(autoUpdateTimer, ^{
+        [weakSelf fireTimer:nil];
+    }); // eof if()
 	
 	[currentTask release]; currentTask = nil;
 	
@@ -514,20 +515,36 @@
 	[self setUpAutoUpdateTimer];
 } // eof autoUpdateIntervalChangedFrom:to:
 	
--(void)setUpAutoUpdateTimer {
-	if (autoUpdateTimer != nil) {
-		[autoUpdateTimer invalidate];
-		[autoUpdateTimer release];
-		autoUpdateTimer = nil;
-	} // eof if()
-	NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-	NSTimeInterval timerInterval = [preferences integerForKey:@"autoUpdateInterval"] * 60;
-	NSDate *startDate = [NSDate dateWithTimeIntervalSinceNow:timerInterval];
-	NSLog(@"Initializing timer...");
-	autoUpdateTimer = [[NSTimer alloc] initWithFireDate:startDate interval:timerInterval target:self selector:@selector(fireTimer:) userInfo:nil repeats:YES];
-	NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-	[runLoop addTimer:autoUpdateTimer forMode:NSDefaultRunLoopMode];
-} // eof autoUpdateTimer
+- (void)setUpAutoUpdateTimer {
+    // Alten GCD-Timer entfernen
+    if (autoUpdateTimer) {
+        dispatch_source_cancel(autoUpdateTimer);
+        autoUpdateTimer = nil;
+    }
+
+    NSUInteger minutes = [[NSUserDefaults standardUserDefaults] integerForKey:@"autoUpdateInterval"];
+    if (minutes == 0) minutes = 5;
+
+    NSTimeInterval interval = minutes;
+
+    dispatch_queue_t queue = dispatch_get_main_queue();
+
+    autoUpdateTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+
+    dispatch_source_set_timer(
+        autoUpdateTimer,
+        dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC),
+        interval * NSEC_PER_SEC,
+        5 * NSEC_PER_SEC     // „leeway“ reduziert CPU-Last
+    );
+
+    __weak __typeof(self) weakSelf = self;
+    dispatch_source_set_event_handler(autoUpdateTimer, ^{
+        [weakSelf fireTimer:nil];
+    });
+
+    dispatch_resume(autoUpdateTimer);
+}// eof autoUpdateTimer
 
 -(void)fireTimer:(NSTimer *)aTimer {
 	[self refreshStatusItemMenu];

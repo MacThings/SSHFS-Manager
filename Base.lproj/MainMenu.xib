@@ -82,7 +82,7 @@
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="400">
                                             <rect key="frame" x="285" y="61" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <stepperCell key="cell" continuous="YES" alignment="left" increment="0.5" minValue="1" maxValue="15" doubleValue="1.5" id="401"/>
+                                            <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="120" doubleValue="120" id="401"/>
                                             <connections>
                                                 <binding destination="362" name="enabled" keyPath="values.autoUpdate" id="606"/>
                                                 <binding destination="362" name="value" keyPath="values.autoUpdateInterval" id="619"/>
@@ -91,7 +91,7 @@
                                         <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="402">
                                             <rect key="frame" x="306" y="66" width="136" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="minute(s)" id="403">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="second(s)" id="403">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
