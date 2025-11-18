@@ -32,6 +32,7 @@
 
 #import "AppController.h"
 #import "BTHMenuItem.h"
+#import <objc/runtime.h>
 
 @implementation AppController
 -(id)init {
@@ -233,13 +234,9 @@
     NSMenu *menu = [[NSMenu alloc] init];
     [menu setAutoenablesItems:NO];
 
-    // 1️⃣ Prüfen, ob macFUSE vollständig installiert ist
-    BOOL fuseInstalled = [self isMacFUSEInstalled]; // prüft alle 3 Dateien
+    BOOL fuseInstalled = [self isMacFUSEInstalled];
 
     if (!fuseInstalled) {
-        // FUSE fehlt: Warnung + Link + Einstellungen + Beenden
-
-        // Warnung rot
         NSMenuItem *fuseMissingItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"macFUSE is missing!", nil)
                                                                   action:nil
                                                            keyEquivalent:@""];
@@ -252,7 +249,6 @@
 
         [menu addItem:[NSMenuItem separatorItem]];
 
-        // Download-Link hinzufügen
         NSMenuItem *downloadFUSE = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Download macFUSE", nil)
                                                               action:@selector(openFUSEDownloadLink:)
                                                        keyEquivalent:@""];
@@ -261,7 +257,6 @@
 
         [menu addItem:[NSMenuItem separatorItem]];
 
-        // Einstellungen
         NSMenuItem *prefs = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences", nil)
                                                        action:@selector(showPreferences:)
                                                 keyEquivalent:@","];
@@ -270,7 +265,6 @@
 
         [menu addItem:[NSMenuItem separatorItem]];
 
-        // Beenden
         NSMenuItem *quit = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", nil)
                                                       action:@selector(doQuit:)
                                                keyEquivalent:@"q"];
@@ -280,7 +274,7 @@
         return menu;
     }
 
-    // ----- Wenn FUSE vollständig installiert ist -----
+    // --- FUSE installiert: Share Items ---
     NSManagedObjectContext *sharesContext = [appDelegate managedObjectContext];
     NSManagedObjectModel *shareModel = [appDelegate managedObjectModel];
     NSEntityDescription *shareEntity = [[shareModel entities] objectAtIndex:0];
@@ -306,9 +300,7 @@
     }
 
     if (shares.count == 0) {
-        NSMenuItem *noVolumes = [[NSMenuItem alloc] initWithTitle:@"No volumes"
-                                                           action:nil
-                                                    keyEquivalent:@""];
+        NSMenuItem *noVolumes = [[NSMenuItem alloc] initWithTitle:@"No volumes" action:nil keyEquivalent:@""];
         [noVolumes setEnabled:NO];
         [menu addItem:noVolumes];
     } else {
@@ -316,22 +308,16 @@
             BTHMenuItem *item = [[BTHMenuItem alloc] initWithTitle:[share valueForKey:@"name"]
                                                             action:nil
                                                      keyEquivalent:@""];
+            [item setTarget:self];
 
-            // Überprüfen, ob Share gemountet ist
             NSString *localPath = [share valueForKey:@"localPath"];
             BOOL isMounted = [mountedFileSystems containsObject:localPath] ||
                              [localPath isEqualToString:[self lastMountedLocalPath]];
 
-            // Action setzen: mount oder unmount
-            if (isMounted) {
-                [item setAction:@selector(doUnmountShare:)];
-            } else {
-                [item setAction:@selector(doMountShare:)];
-            }
+            // Action je nach Status
+            [item setAction:(isMounted ? @selector(doUnmountShare:) : @selector(doMountShare:))];
 
-            [item setTarget:self];
-
-            // Item-Daten weitergeben
+            // Item-Daten
             NSMutableDictionary *itemData = [NSMutableDictionary dictionary];
             [itemData setObject:[share valueForKey:@"host"] forKey:@"host"];
             [itemData setObject:[share valueForKey:@"login"] forKey:@"login"];
@@ -343,11 +329,35 @@
             if (localPath) [itemData setObject:localPath forKey:@"localPath"];
             [item setItemData:itemData];
 
-            // Icon setzen
+            // Icons
             NSImage *greenDot = [NSImage imageNamed:NSImageNameStatusAvailable];
             NSImage *redDot   = [NSImage imageNamed:NSImageNameStatusUnavailable];
-            [item setImage:(isMounted ? greenDot : redDot)];
+            NSImage *ejectIcon = [NSImage imageNamed:@"eject"];
 
+            if (isMounted) {
+                // Kombiniertes Icon: grün + eject rechts
+                NSImage *composite = [[NSImage alloc] initWithSize:NSMakeSize(28, 16)]; // Gesamtbreite 16+10
+                [composite lockFocus];
+                
+                // Grüner Punkt links 16x16
+                [greenDot drawInRect:NSMakeRect(0, 0, 16, 16)
+                            fromRect:NSZeroRect
+                           operation:NSCompositingOperationSourceOver
+                            fraction:1.0];
+                
+                // Eject-Icon rechts 10x10, zentriert vertikal
+                [ejectIcon drawInRect:NSMakeRect(18, 3, 10, 10) // y=3 um vertikal zu zentrieren
+                             fromRect:NSZeroRect
+                            operation:NSCompositingOperationSourceOver
+                             fraction:1.0];
+                
+                [composite unlockFocus];
+                [item setImage:composite];
+            } else {
+                [item setImage:redDot];
+            }
+
+            // Bindings
             [item bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
             [item bind:@"enabled2"
                toObject:self
@@ -355,21 +365,17 @@
                 options:@{NSValueTransformerNameBindingOption: NSNegateBooleanTransformerName}];
 
             [menu addItem:item];
-        
         }
     }
 
-    // Separator
     [menu addItem:[NSMenuItem separatorItem]];
 
-    // Preferences
     NSMenuItem *prefs = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Preferences", nil)
                                                    action:@selector(showPreferences:)
                                             keyEquivalent:@","];
     [prefs setTarget:self];
     [menu addItem:prefs];
 
-    // Quit
     NSMenuItem *quit = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", nil)
                                                   action:@selector(doQuit:)
                                            keyEquivalent:@"q"];
@@ -377,7 +383,7 @@
     [menu addItem:quit];
 
     return menu;
-} // eof buildStatusItemMenu
+}// eof buildStatusItemMenu
 
 -(void)refreshStatusItemMenu {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -541,41 +547,29 @@
 #pragma mark - Unmount Share
 
 - (IBAction)doUnmountShare:(id)sender {
-    NSDictionary *itemData = [sender itemData];
+    if (![sender isKindOfClass:[BTHMenuItem class]]) return; // Sicherheit
+
+    BTHMenuItem *item = (BTHMenuItem *)sender;
+    NSDictionary *itemData = [item itemData];
+
     if (!itemData) return;
 
-    NSString *localPath = [itemData objectForKey:@"localPath"];
-    if (localPath == nil || [localPath length] == 0) {
-        NSLog(@"[Unmount] Kein localPath vorhanden.");
-        return;
+    NSString *localPath = itemData[@"localPath"];
+    if (!localPath) return;
+
+    // Unmount-Task starten
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:@"/usr/sbin/diskutil"];
+    [task setArguments:@[@"unmount", localPath]];
+
+    @try {
+        [task launch];
+    } @catch (NSException *exception) {
+        NSLog(@"Failed to unmount %@: %@", localPath, exception.reason);
     }
 
-    // Prüfen, ob es überhaupt gemountet ist
-    BOOL isMounted = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
-    if (!isMounted) {
-        NSLog(@"[Unmount] Volume scheint nicht gemountet zu sein: %@", localPath);
-        return;
-    }
-
-    [self setIsWorking:YES];
-
-    // Unmount durchführen
-    [self unmountAtPath:localPath completion:^(BOOL success, NSError *error) {
-
-        if (!success) {
-            if (error) {
-                [[NSApplication sharedApplication] presentError:error];
-            }
-            [self setIsWorking:NO];
-            return;
-        }
-
-        // Erfolgreich → Menüs neu aufbauen
-        self.lastMountedLocalPath = nil;
-        [self refreshStatusItemMenu];
-
-        [self setIsWorking:NO];
-    }];
+    [task release];
+    [self refreshStatusItemMenu];
 }
 
 - (void)unmountAtPath:(NSString *)path completion:(void (^)(BOOL success, NSError *error))completion {
