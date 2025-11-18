@@ -307,7 +307,9 @@
     }
 
     if (shares.count == 0) {
-        NSMenuItem *noVolumes = [[NSMenuItem alloc] initWithTitle:@"No volumes" action:nil keyEquivalent:@""];
+        NSMenuItem *noVolumes = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No volumes", @"Shown when no SSHFS shares are configured")
+                                                            action:nil
+                                                     keyEquivalent:@""];
         [noVolumes setEnabled:NO];
         [menu addItem:noVolumes];
     } else {
@@ -315,7 +317,7 @@
             // Share-Name prüfen
             NSString *shareName = [share valueForKey:@"name"];
             if (shareName == nil || [shareName length] == 0) {
-                shareName = NSLocalizedString(@"Unnamed Share", @"Fallback-Name für Shares ohne Namen");
+                shareName = NSLocalizedString(@"Unconfigured Share", @"Fallback-Name für Shares ohne Namen");
             }
 
             BTHMenuItem *item = [[BTHMenuItem alloc] initWithTitle:shareName
@@ -792,6 +794,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:hideInDock forKey:@"HideDockIcon"];
     [defaults synchronize];
+
+    // Fenster immer im Vordergrund halten
+    [preferencesWindow setLevel:NSFloatingWindowLevel];
 
     // Preferences-Fenster in den Vordergrund holen
     if ([preferencesWindow isVisible]) {

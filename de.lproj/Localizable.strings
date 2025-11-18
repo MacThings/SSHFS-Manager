@@ -10,3 +10,5 @@
 "Quit" = "Beenden";
 "macFUSE is missing!" = "macFUSE ist nicht installiert!";
 "Download macFUSE" = "macFUSE herunterladen";
+"No volumes" = "Noch keine Shares definiert";
+"Unconfigured Share" = "Unkonfigurierter Share";

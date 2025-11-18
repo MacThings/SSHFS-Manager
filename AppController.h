@@ -51,7 +51,7 @@
     int sshfsFinderPID;
     int shareMounterPID;
     NSString *lastMountedLocalPath;
-    NSTimer *autoUpdateTimer;
+    dispatch_source_t autoUpdateTimer;
     /*NSTask *sshFinderTask;
     NSTask *shareMounterTask;*/
     NSTask *currentTask;
