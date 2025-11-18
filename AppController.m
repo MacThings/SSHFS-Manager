@@ -336,7 +336,7 @@
 
             if (isMounted) {
                 // Kombiniertes Icon: grün + eject rechts
-                NSImage *composite = [[NSImage alloc] initWithSize:NSMakeSize(28, 16)]; // Gesamtbreite 16+10
+                NSImage *composite = [[NSImage alloc] initWithSize:NSMakeSize(28, 16)]; // Gesamtbreite 18+10
                 [composite lockFocus];
                 
                 // Grüner Punkt links 16x16
@@ -662,8 +662,10 @@
 } // eof doAddShare:
 
 -(IBAction)showPreferences:(id)sender {
-	[[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-	[preferencesWindow makeKeyAndOrderFront:sender];
+    // App in den Vordergrund holen
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    // Preferences-Fenster in den Vordergrund holen
+    [preferencesWindow makeKeyAndOrderFront:sender];
 } // eof showPreferences:
 
 -(IBAction)showAbout:(id)sender {
