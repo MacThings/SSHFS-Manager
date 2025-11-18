@@ -344,6 +344,9 @@
             NSString *login = [share valueForKey:@"login"];
             if (login) [itemData setObject:login forKey:@"login"];
 
+            //NSString *password = [share valueForKey:@"password"];
+            //if (password) [itemData setObject:password forKey:@"password"];
+            
             NSString *options = [share valueForKey:@"options"];
             if (options) [itemData setObject:options forKey:@"options"];
 
@@ -353,6 +356,9 @@
             NSString *remotePath = [share valueForKey:@"remotePath"];
             if (remotePath && [remotePath length] > 0) [itemData setObject:remotePath forKey:@"remotePath"];
 
+            //NSString *rsaKey = [share valueForKey:@"rsaKey"];
+            //if (rsaKey && [rsaKey length] > 0) [itemData setObject:rsaKey forKey:@"rsaKey"];
+            
             NSString *volumeName = [share valueForKey:@"volumeName"];
             if (volumeName && [volumeName length] > 0) [itemData setObject:volumeName forKey:@"volumeName"];
 
@@ -550,7 +556,9 @@
         [args addObject:@"-p"];
         [args addObject:[NSString stringWithFormat:@"%d", [[itemData objectForKey:@"port"] intValue]]];
         [args addObject:[NSString stringWithFormat:@"%@@%@:%@",
+                         //[itemData objectForKey:@"rsaKey"],
                          [itemData objectForKey:@"login"],
+                         //[itemData objectForKey:@"password"],
                          [itemData objectForKey:@"host"],
                          remotePath]];
         [args addObject:[itemData objectForKey:@"localPath"]];
