@@ -359,7 +359,6 @@
             if (localPath && [localPath length] > 0) [itemData setObject:localPath forKey:@"localPath"];
 
             [item setItemData:itemData];
-        
 
             // Icons
             NSImage *greenDot = [NSImage imageNamed:NSImageNameStatusAvailable];
