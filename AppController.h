@@ -81,6 +81,8 @@
 
 -(IBAction)doMountShare:(id)sender;
 -(IBAction)doBrowseLocalPath:(id)sender;
+- (IBAction)doBrowseRSAKey:(id)sender;
+
 -(IBAction)doAddShare:(id)sender;
 -(IBAction)showPreferences:(id)sender;
 -(IBAction)showAbout:(id)sender;

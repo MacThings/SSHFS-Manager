@@ -748,17 +748,24 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="363" name="value" keyPath="selection.rsaKey" id="xMV-fJ-fKh"/>
+                        <binding destination="363" name="value" keyPath="selection.rsaKey" id="FeD-ZA-jTR">
+                            <dictionary key="options">
+                                <string key="NSNoSelectionPlaceholder">No Selection</string>
+                            </dictionary>
+                        </binding>
                         <outlet property="nextKeyView" destination="486" id="dwz-0t-RmK"/>
                     </connections>
                 </textField>
                 <button imageHugsTitle="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Blo-RN-SqN">
                     <rect key="frame" x="359" y="277" width="24" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="magnifyingglass.circle.fill" catalog="system" imagePosition="only" alignment="center" enabled="NO" state="on" borderStyle="border" inset="2" id="9aD-A1-pOb">
+                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="magnifyingglass.circle.fill" catalog="system" imagePosition="only" alignment="center" state="on" borderStyle="border" inset="2" id="9aD-A1-pOb">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
+                    <connections>
+                        <action selector="doBrowseRSAKey:" target="357" id="j9X-fA-IfE"/>
+                    </connections>
                 </button>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F6h-fK-d1Z">
                     <rect key="frame" x="58" y="281" width="77" height="16"/>

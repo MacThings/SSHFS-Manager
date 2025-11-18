@@ -714,6 +714,44 @@
     [task launch];
 }
 
+- (IBAction)doBrowseRSAKey:(id)sender {
+    NSOpenPanel *rsaKeyPanel = [NSOpenPanel openPanel];
+       [rsaKeyPanel setCanChooseFiles:YES];
+       [rsaKeyPanel setCanChooseDirectories:NO];
+       [rsaKeyPanel setAllowsMultipleSelection:NO];
+       rsaKeyPanel.directoryURL = [NSURL fileURLWithPath:[@"~/.ssh" stringByExpandingTildeInPath]];
+
+       [rsaKeyPanel beginSheetModalForWindow:preferencesWindow completionHandler:^(NSInteger result) {
+           [self rsaKeyBrowseSheetDidEnd:rsaKeyPanel returnCode:(int)result contextInfo:NULL];
+       }];
+}
+
+- (void)rsaKeyBrowseSheetDidEnd:(NSOpenPanel *)panel
+                     returnCode:(int)returnCode
+                    contextInfo:(void *)contextInfo {
+    if (returnCode == NSModalResponseOK) {
+        NSArray<NSURL *> *urls = [panel URLs];
+        if ([urls count] > 0) {
+            NSString *filename = [[urls objectAtIndex:0] path];
+
+            // Aktuell ausgewähltes Core-Data-Objekt holen
+            NSManagedObject *currentShare = [[sharesController selectedObjects] objectAtIndex:0];
+
+            // Key speichern
+            [currentShare setValue:filename forKey:@"rsaKey"];
+
+            // Speichern nicht vergessen
+            NSError *error = nil;
+            NSManagedObjectContext *context = [currentShare managedObjectContext];
+            if (![context save:&error]) {
+                NSLog(@"[ERROR] Failed to save rsaKey: %@", error);
+            } else {
+                NSLog(@"[DEBUG] RSA key saved: %@", filename);
+            }
+        }
+    }
+}
+
 - (IBAction)doBrowseLocalPath:(id)sender {
     NSOpenPanel *localPathPanel = [NSOpenPanel openPanel];
     [localPathPanel setCanChooseFiles:NO];
