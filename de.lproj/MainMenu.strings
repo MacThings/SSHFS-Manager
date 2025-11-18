@@ -63,7 +63,7 @@
 "393.title" = "Check";
 
 /* Class = "NSTextFieldCell"; title = "Autom. Aktualisierung des Shares:"; ObjectID = "395"; */
-"U11-Bc-aoi.title" = "Autom. Aktualisierung des Shares:";
+"U11-Bc-aoi.title" = "Autom. Aktualisierung des Shares";
 
 /* Class = "NSTextFieldCell"; title = "Minute(n)"; ObjectID = "403"; */
 "403.title" = "Minute(n)";
@@ -162,3 +162,5 @@
 
 "6Xq-Uh-JJq.title" = "Nach Aktualisierungen suchen";
 "8aL-F2-wgb.title" = "Zuletzt geprüft:";
+
+"3Ag-hg-5IG.title" = "Icon im Dock ausblenden";

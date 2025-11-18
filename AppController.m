@@ -161,7 +161,14 @@
     [statusItem setLength:25.0];
     [statusItem retain];
     
-    self.appVersion = [NSString stringWithFormat:@"v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL hideDockIcon = [defaults boolForKey:@"HideDockIcon"];
+    NSApplicationActivationPolicy policy = hideDockIcon ?
+        NSApplicationActivationPolicyAccessory :
+        NSApplicationActivationPolicyRegular;
+    [[NSApplication sharedApplication] setActivationPolicy:policy];
+    
+    self.appVersion = [NSString stringWithFormat:@"v %@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"sshfs-manager.slsoft.de"];
     NSDate *lastCheck = [[NSUserDefaults standardUserDefaults] objectForKey:@"SULastCheckTime"];
 
@@ -667,6 +674,27 @@
     // Preferences-Fenster in den Vordergrund holen
     [preferencesWindow makeKeyAndOrderFront:sender];
 } // eof showPreferences:
+
+- (IBAction)toggleDockIcon:(NSButton *)sender {
+    BOOL hideInDock = (sender.state == NSControlStateValueOn);
+
+    // Aktivierungs-Policy setzen
+    NSApplicationActivationPolicy policy = hideInDock ?
+        NSApplicationActivationPolicyAccessory :
+        NSApplicationActivationPolicyRegular;
+    [[NSApplication sharedApplication] setActivationPolicy:policy];
+
+    // UserDefaults speichern
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:hideInDock forKey:@"HideDockIcon"];
+    [defaults synchronize];
+
+    // Preferences-Fenster in den Vordergrund holen
+    if ([preferencesWindow isVisible]) {
+        [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+        [preferencesWindow makeKeyAndOrderFront:self];
+    }
+}
 
 -(IBAction)showAbout:(id)sender {
 	[[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
