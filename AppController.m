@@ -359,6 +359,11 @@
             NSString *rsaKey = [share valueForKey:@"rsaKey"];
             if (rsaKey && [rsaKey length] > 0) [itemData setObject:rsaKey forKey:@"rsaKey"];
             
+            NSNumber *rsaKeyUse = [share valueForKey:@"rsaKeyUse"];
+            if ([rsaKeyUse boolValue]) {
+                [itemData setObject:rsaKeyUse forKey:@"rsaKeyUse"];
+            }
+            
             NSString *volumeName = [share valueForKey:@"volumeName"];
             if (volumeName && [volumeName length] > 0) [itemData setObject:volumeName forKey:@"volumeName"];
 
@@ -564,16 +569,26 @@
     // --- Optionen zusammenbauen ---
     
     NSString *rsaKey = [itemData objectForKey:@"rsaKey"];
-    NSLog(@"[DEBUG] rsaKey = %@", rsaKey);
-    
+    NSNumber *rsaKeyUse = [itemData objectForKey:@"rsaKeyUse"]; // Boolean gespeichert als NSNumber
+
     NSString *options = [itemData objectForKey:@"options"] ?: @""; // Fallback leer
-    if (rsaKey && rsaKey.length > 0) {
+
+    if ([rsaKeyUse boolValue] && rsaKey && rsaKey.length > 0) {
         NSString *expandedKey = [rsaKey stringByExpandingTildeInPath];
-        if (options.length > 0) {
-            options = [options stringByAppendingFormat:@",IdentityFile=%@", expandedKey];
+        
+        // Optional: prüfen, ob Datei existiert
+        if ([[NSFileManager defaultManager] fileExistsAtPath:expandedKey]) {
+            if (options.length > 0) {
+                options = [options stringByAppendingFormat:@",IdentityFile=%@", expandedKey];
+            } else {
+                options = [NSString stringWithFormat:@"IdentityFile=%@", expandedKey];
+            }
+            NSLog(@"[DEBUG] Using IdentityFile: %@", expandedKey);
         } else {
-            options = [NSString stringWithFormat:@"IdentityFile=%@", expandedKey];
+            NSLog(@"[DEBUG] IdentityFile path does not exist: %@", expandedKey);
         }
+    } else {
+        NSLog(@"[DEBUG] rsaKeyUse disabled or rsaKey missing");
     }
 
     NSString *volumeName = [itemData objectForKey:@"volumeName"];
