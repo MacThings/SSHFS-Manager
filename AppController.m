@@ -522,10 +522,10 @@
         autoUpdateTimer = nil;
     }
 
-    NSUInteger minutes = [[NSUserDefaults standardUserDefaults] integerForKey:@"autoUpdateInterval"];
-    if (minutes == 0) minutes = 5;
+    NSUInteger seconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"autoUpdateInterval"];
+    if (seconds == 0) seconds = 10;
 
-    NSTimeInterval interval = minutes;
+    NSTimeInterval interval = seconds * 2;
 
     dispatch_queue_t queue = dispatch_get_main_queue();
 

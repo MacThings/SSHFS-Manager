@@ -66,7 +66,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="398">
-                                            <rect key="frame" x="228" y="64" width="52" height="22"/>
+                                            <rect key="frame" x="228" y="64" width="31" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="399">
                                                 <font key="font" metaFont="system"/>
@@ -76,11 +76,10 @@
                                             <connections>
                                                 <binding destination="362" name="enabled" keyPath="values.autoUpdate" id="604"/>
                                                 <binding destination="362" name="value" keyPath="values.autoUpdateInterval" id="618"/>
-                                                <outlet property="formatter" destination="406" id="407"/>
                                             </connections>
                                         </textField>
                                         <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="400">
-                                            <rect key="frame" x="285" y="61" width="19" height="27"/>
+                                            <rect key="frame" x="267" y="61" width="19" height="27"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="120" doubleValue="120" id="401"/>
                                             <connections>
@@ -89,7 +88,7 @@
                                             </connections>
                                         </stepper>
                                         <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="402">
-                                            <rect key="frame" x="306" y="66" width="136" height="17"/>
+                                            <rect key="frame" x="288" y="66" width="136" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="second(s)" id="403">
                                                 <font key="font" metaFont="system"/>
