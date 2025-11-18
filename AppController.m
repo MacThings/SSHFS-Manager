@@ -329,12 +329,17 @@
             NSString *localPath = [share valueForKey:@"localPath"];
             [itemData setObject:localPath forKey:@"localPath"];
 
-            if ([mountedFileSystems containsObject:localPath] ||
-                [localPath isEqualToString:[self lastMountedLocalPath]]) {
-                [item setState:NSControlStateValueOn];
-            } else {
-                [item setState:NSControlStateValueOff];
-            }
+            BOOL isMounted = [mountedFileSystems containsObject:localPath] ||
+                             [localPath isEqualToString:[self lastMountedLocalPath]];
+
+            NSImage *greenDot = [NSImage imageNamed:NSImageNameStatusAvailable];
+            NSImage *redDot   = [NSImage imageNamed:NSImageNameStatusUnavailable];
+
+            // Haken abschalten
+            [item setState:NSControlStateValueOff];
+
+            // Farbiges Icon setzen
+            [item setImage:(isMounted ? greenDot : redDot)];
 
             [item bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
             [item bind:@"enabled2"
