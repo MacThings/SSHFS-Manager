@@ -42,14 +42,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2A0525642ECB9F0D0099D78A /* Copy sshfs */ = {
+		2A0525642ECB9F0D0099D78A /* Copy bins */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = bin;
 			dstSubfolderSpec = 7;
 			files = (
 			);
-			name = "Copy sshfs";
+			name = "Copy bins";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -87,20 +87,23 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				sshfs,
+				sshpass,
 			);
 			target = 8D1107260486CEB800E47090 /* SSHFS Manager */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		2A0525662ECB9F1D0099D78A /* Exceptions for "bin" folder in "Copy sshfs" phase from "SSHFS Manager" target */ = {
+		2A0525662ECB9F1D0099D78A /* Exceptions for "bin" folder in "Copy bins" phase from "SSHFS Manager" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			attributesByRelativePath = {
 				sshfs = (CodeSignOnCopy, );
+				sshpass = (CodeSignOnCopy, );
 			};
-			buildPhase = 2A0525642ECB9F0D0099D78A /* Copy sshfs */;
+			buildPhase = 2A0525642ECB9F0D0099D78A /* Copy bins */;
 			membershipExceptions = (
 				sshfs,
+				sshpass,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -110,7 +113,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				2A0525672ECB9F300099D78A /* Exceptions for "bin" folder in "SSHFS Manager" target */,
-				2A0525662ECB9F1D0099D78A /* Exceptions for "bin" folder in "Copy sshfs" phase from "SSHFS Manager" target */,
+				2A0525662ECB9F1D0099D78A /* Exceptions for "bin" folder in "Copy bins" phase from "SSHFS Manager" target */,
 			);
 			path = bin;
 			sourceTree = "<group>";
@@ -230,7 +233,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				2A0525642ECB9F0D0099D78A /* Copy sshfs */,
+				2A0525642ECB9F0D0099D78A /* Copy bins */,
 				2A583EAA2ECA30C300E7BCC0 /* Prepare Build */,
 			);
 			buildRules = (

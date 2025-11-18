@@ -356,8 +356,8 @@
             NSString *remotePath = [share valueForKey:@"remotePath"];
             if (remotePath && [remotePath length] > 0) [itemData setObject:remotePath forKey:@"remotePath"];
 
-            //NSString *rsaKey = [share valueForKey:@"rsaKey"];
-            //if (rsaKey && [rsaKey length] > 0) [itemData setObject:rsaKey forKey:@"rsaKey"];
+            NSString *rsaKey = [share valueForKey:@"rsaKey"];
+            if (rsaKey && [rsaKey length] > 0) [itemData setObject:rsaKey forKey:@"rsaKey"];
             
             NSString *volumeName = [share valueForKey:@"volumeName"];
             if (volumeName && [volumeName length] > 0) [itemData setObject:volumeName forKey:@"volumeName"];
@@ -529,58 +529,77 @@
 -(IBAction)doMountShare:(id)sender {
     if ([sender state] == NSControlStateValueOn) return;
 
-        NSDictionary *itemData = [sender itemData];
-        if (!itemData) return;
+    NSDictionary *itemData = [sender itemData];
+    if (!itemData) return;
 
-        NSString *remotePath = [itemData objectForKey:@"remotePath"] ?: @"";
-        NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-        NSString *sshfsPath = [preferences valueForKey:@"sshfsPath"];
+    NSString *remotePath = [itemData objectForKey:@"remotePath"] ?: @"";
+    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+    NSString *sshfsPath = [preferences valueForKey:@"sshfsPath"];
 
-        // Sicherheit: Pfad muss existieren und ausführbar sein
-        if (sshfsPath == nil || ![[NSFileManager defaultManager] isExecutableFileAtPath:sshfsPath]) {
-            NSLog(@"SSHFS binary not found or not executable at path: %@", sshfsPath);
-            [self setHasSshfs:NO];
-            return;
+    // Sicherheit: Pfad muss existieren und ausführbar sein
+    if (sshfsPath == nil || ![[NSFileManager defaultManager] isExecutableFileAtPath:sshfsPath]) {
+        NSLog(@"SSHFS binary not found or not executable at path: %@", sshfsPath);
+        [self setHasSshfs:NO];
+        return;
+    }
+
+    if (currentTask != nil) {
+        [currentTask release];
+        currentTask = nil;
+    }
+
+    currentTask = [[NSTask alloc] init];
+    [currentTask setCurrentDirectoryPath:[@"~" stringByExpandingTildeInPath]];
+    [currentTask setLaunchPath:sshfsPath];
+
+    NSMutableArray *args = [NSMutableArray array];
+    [args addObject:@"-p"];
+    [args addObject:[NSString stringWithFormat:@"%d", [[itemData objectForKey:@"port"] intValue]]];
+    [args addObject:[NSString stringWithFormat:@"%@@%@:%@",
+                     [itemData objectForKey:@"login"],
+                     [itemData objectForKey:@"host"],
+                     remotePath]];
+    [args addObject:[itemData objectForKey:@"localPath"]];
+
+    // --- Optionen zusammenbauen ---
+    
+    NSString *rsaKey = [itemData objectForKey:@"rsaKey"];
+    NSLog(@"[DEBUG] rsaKey = %@", rsaKey);
+    
+    NSString *options = [itemData objectForKey:@"options"] ?: @""; // Fallback leer
+    if (rsaKey && rsaKey.length > 0) {
+        NSString *expandedKey = [rsaKey stringByExpandingTildeInPath];
+        if (options.length > 0) {
+            options = [options stringByAppendingFormat:@",IdentityFile=%@", expandedKey];
+        } else {
+            options = [NSString stringWithFormat:@"IdentityFile=%@", expandedKey];
         }
+    }
 
-        if (currentTask != nil) {
-            [currentTask release];
-            currentTask = nil;
-        }
+    NSString *volumeName = [itemData objectForKey:@"volumeName"];
+    if (volumeName && volumeName.length > 0) {
+        options = [options stringByAppendingFormat:@",volname=%@", volumeName];
+    }
 
-        currentTask = [[NSTask alloc] init];
-        [currentTask setCurrentDirectoryPath:[@"~" stringByExpandingTildeInPath]];
-        [currentTask setLaunchPath:sshfsPath];
+    NSLog(@"[DEBUG] SSHFS options: %@", options);
 
-        NSMutableArray *args = [NSMutableArray array];
-        [args addObject:@"-p"];
-        [args addObject:[NSString stringWithFormat:@"%d", [[itemData objectForKey:@"port"] intValue]]];
-        [args addObject:[NSString stringWithFormat:@"%@@%@:%@",
-                         //[itemData objectForKey:@"rsaKey"],
-                         [itemData objectForKey:@"login"],
-                         //[itemData objectForKey:@"password"],
-                         [itemData objectForKey:@"host"],
-                         remotePath]];
-        [args addObject:[itemData objectForKey:@"localPath"]];
-        [args addObject:[NSString stringWithFormat:@"-o%@,volname=%@",
-                         [itemData objectForKey:@"options"],
-                         [itemData objectForKey:@"volumeName"]]];
+    [args addObject:[NSString stringWithFormat:@"-o%@", options]];
 
-        [currentTask setArguments:args];
+    [currentTask setArguments:args];
 
-        @try {
-            [currentTask launch];
-        } @catch (NSException *exception) {
-            NSLog(@"Failed to launch SSHFS: %@, reason: %@", sshfsPath, exception.reason);
-            [self setHasSshfs:NO];
-            return;
-        }
+    @try {
+        [currentTask launch];
+    } @catch (NSException *exception) {
+        NSLog(@"Failed to launch SSHFS: %@, reason: %@", sshfsPath, exception.reason);
+        [self setHasSshfs:NO];
+        return;
+    }
 
-        if ([currentTask isRunning]) {
-            shareMounterPID = [currentTask processIdentifier];
-            [self setIsWorking:YES];
-            [self setLastMountedLocalPath:[itemData objectForKey:@"localPath"]];
-        } // eof if()
+    if ([currentTask isRunning]) {
+        shareMounterPID = [currentTask processIdentifier];
+        [self setIsWorking:YES];
+        [self setLastMountedLocalPath:[itemData objectForKey:@"localPath"]];
+    }
 } // eof doMountShare:
 
 #pragma mark - Unmount Share
