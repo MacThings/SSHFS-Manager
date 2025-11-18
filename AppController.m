@@ -314,10 +314,24 @@
     } else {
         for (NSManagedObject *share in shares) {
             BTHMenuItem *item = [[BTHMenuItem alloc] initWithTitle:[share valueForKey:@"name"]
-                                                            action:@selector(doMountShare:)
+                                                            action:nil
                                                      keyEquivalent:@""];
+
+            // Überprüfen, ob Share gemountet ist
+            NSString *localPath = [share valueForKey:@"localPath"];
+            BOOL isMounted = [mountedFileSystems containsObject:localPath] ||
+                             [localPath isEqualToString:[self lastMountedLocalPath]];
+
+            // Action setzen: mount oder unmount
+            if (isMounted) {
+                [item setAction:@selector(doUnmountShare:)];
+            } else {
+                [item setAction:@selector(doMountShare:)];
+            }
+
             [item setTarget:self];
 
+            // Item-Daten weitergeben
             NSMutableDictionary *itemData = [NSMutableDictionary dictionary];
             [itemData setObject:[share valueForKey:@"host"] forKey:@"host"];
             [itemData setObject:[share valueForKey:@"login"] forKey:@"login"];
@@ -326,19 +340,12 @@
             NSString *remotePath = [share valueForKey:@"remotePath"];
             if (remotePath) [itemData setObject:remotePath forKey:@"remotePath"];
             [itemData setObject:[share valueForKey:@"volumeName"] forKey:@"volumeName"];
-            NSString *localPath = [share valueForKey:@"localPath"];
-            [itemData setObject:localPath forKey:@"localPath"];
+            if (localPath) [itemData setObject:localPath forKey:@"localPath"];
+            [item setItemData:itemData];
 
-            BOOL isMounted = [mountedFileSystems containsObject:localPath] ||
-                             [localPath isEqualToString:[self lastMountedLocalPath]];
-
+            // Icon setzen
             NSImage *greenDot = [NSImage imageNamed:NSImageNameStatusAvailable];
             NSImage *redDot   = [NSImage imageNamed:NSImageNameStatusUnavailable];
-
-            // Haken abschalten
-            [item setState:NSControlStateValueOff];
-
-            // Farbiges Icon setzen
             [item setImage:(isMounted ? greenDot : redDot)];
 
             [item bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
@@ -347,8 +354,8 @@
             withKeyPath:@"isWorking"
                 options:@{NSValueTransformerNameBindingOption: NSNegateBooleanTransformerName}];
 
-            [item setItemData:itemData];
             [menu addItem:item];
+        
         }
     }
 
@@ -530,6 +537,115 @@
             [self setLastMountedLocalPath:[itemData objectForKey:@"localPath"]];
         } // eof if()
 } // eof doMountShare:
+
+#pragma mark - Unmount Share
+
+- (IBAction)doUnmountShare:(id)sender {
+    NSDictionary *itemData = [sender itemData];
+    if (!itemData) return;
+
+    NSString *localPath = [itemData objectForKey:@"localPath"];
+    if (localPath == nil || [localPath length] == 0) {
+        NSLog(@"[Unmount] Kein localPath vorhanden.");
+        return;
+    }
+
+    // Prüfen, ob es überhaupt gemountet ist
+    BOOL isMounted = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
+    if (!isMounted) {
+        NSLog(@"[Unmount] Volume scheint nicht gemountet zu sein: %@", localPath);
+        return;
+    }
+
+    [self setIsWorking:YES];
+
+    // Unmount durchführen
+    [self unmountAtPath:localPath completion:^(BOOL success, NSError *error) {
+
+        if (!success) {
+            if (error) {
+                [[NSApplication sharedApplication] presentError:error];
+            }
+            [self setIsWorking:NO];
+            return;
+        }
+
+        // Erfolgreich → Menüs neu aufbauen
+        self.lastMountedLocalPath = nil;
+        [self refreshStatusItemMenu];
+
+        [self setIsWorking:NO];
+    }];
+}
+
+- (void)unmountAtPath:(NSString *)path completion:(void (^)(BOOL success, NSError *error))completion {
+
+    if (path == nil || [path length] == 0) {
+        NSError *err = [NSError errorWithDomain:@"SSHFSManagerError"
+                                           code:-10
+                                       userInfo:@{NSLocalizedDescriptionKey:
+                                                   @"Unmount failed: localPath is empty."}];
+        completion(NO, err);
+        return;
+    }
+
+    // 1) diskutil (sanfter Unmount)
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:@"/usr/sbin/diskutil"];
+    [task setArguments:@[@"unmount", path]];
+    [task setStandardOutput:[NSPipe pipe]];
+    [task setStandardError:[NSPipe pipe]];
+
+    __block pid_t pid = 0;
+
+    [[NSNotificationCenter defaultCenter] addObserverForName:NSTaskDidTerminateNotification
+                                                      object:task
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note)
+    {
+        int status = [task terminationStatus];
+
+        if (status == 0) {
+            // Erfolg
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            [task release];
+            completion(YES, nil);
+            return;
+        }
+
+        // 2) Fallback: "umount -f"
+        NSTask *force = [[NSTask alloc] init];
+        [force setLaunchPath:@"/sbin/umount"];
+        [force setArguments:@[@"-f", path]];
+        [force setStandardOutput:[NSPipe pipe]];
+        [force setStandardError:[NSPipe pipe]];
+        pid = [force processIdentifier];
+
+        [[NSNotificationCenter defaultCenter] addObserverForName:NSTaskDidTerminateNotification
+                                                          object:force
+                                                           queue:nil
+                                                      usingBlock:^(NSNotification *note2)
+        {
+            int forceStatus = [force terminationStatus];
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            [force release];
+
+            if (forceStatus == 0) {
+                completion(YES, nil);
+            } else {
+                NSError *err = [NSError errorWithDomain:@"SSHFSManagerError"
+                                                   code:-11
+                                               userInfo:@{NSLocalizedDescriptionKey:
+                                                              [NSString stringWithFormat:@"Unable to unmount %@.", path]}];
+                completion(NO, err);
+            }
+        }];
+
+        [force launch];
+    }];
+
+    [task launch];
+}
 
 - (IBAction)doBrowseLocalPath:(id)sender {
     NSOpenPanel *localPathPanel = [NSOpenPanel openPanel];
