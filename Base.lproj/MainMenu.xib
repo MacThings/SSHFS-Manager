@@ -406,6 +406,50 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Edit" id="p1v-0b-hAv">
+                    <menu key="submenu" title="Edit" id="e4w-i3-SBG">
+                        <items>
+                            <menuItem title="Undo" keyEquivalent="z" id="Lhz-Vr-Pgd">
+                                <connections>
+                                    <action selector="undo:" target="-1" id="hQR-IB-oJH"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Redo" keyEquivalent="Z" id="gT3-fT-EJC">
+                                <connections>
+                                    <action selector="redo:" target="-1" id="0pT-iV-vvM"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="GCl-Ww-jhi">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Cut" keyEquivalent="x" id="EYp-0L-ecZ">
+                                <connections>
+                                    <action selector="cut:" target="-1" id="kfg-MM-Z1g"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Copy" keyEquivalent="c" id="7O4-5G-nHE">
+                                <connections>
+                                    <action selector="copy:" target="-1" id="2un-y8-Wee"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Paste" keyEquivalent="v" id="bBQ-vd-b8y">
+                                <connections>
+                                    <action selector="paste:" target="-1" id="83z-Ej-bCI"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Delete" id="bOm-qb-33n">
+                                <connections>
+                                    <action selector="delete:" target="-1" id="026-iS-ech"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select All" keyEquivalent="a" id="hC7-xs-njL">
+                                <connections>
+                                    <action selector="selectAll:" target="-1" id="nAc-PZ-XGa"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
             </items>
             <point key="canvasLocation" x="204" y="-571"/>
         </menu>
@@ -712,7 +756,7 @@
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uxG-ro-VHv">
                     <rect key="frame" x="24" y="30" width="359" height="95"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="border" drawsBackground="YES" allowsEditingTextAttributes="YES" id="BDL-a4-lui">
+                    <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="border" drawsBackground="YES" id="BDL-a4-lui">
                         <font key="font" metaFont="cellTitle"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
