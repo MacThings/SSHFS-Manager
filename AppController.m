@@ -335,7 +335,7 @@
             BOOL isMounted = [mountedFileSystems containsObject:localPath] ||
                              [localPath isEqualToString:[self lastMountedLocalPath]];
 
-            // Action je nach Status
+            // Action je nach Mount-Status
             [item setAction:(isMounted ? @selector(doUnmountShare:) : @selector(doMountShare:))];
 
             // Item-Daten sicher setzen
@@ -347,9 +347,6 @@
             NSString *login = [share valueForKey:@"login"];
             if (login) [itemData setObject:login forKey:@"login"];
 
-            //NSString *password = [share valueForKey:@"password"];
-            //if (password) [itemData setObject:password forKey:@"password"];
-            
             NSString *options = [share valueForKey:@"options"];
             if (options) [itemData setObject:options forKey:@"options"];
 
@@ -361,12 +358,12 @@
 
             NSString *rsaKey = [share valueForKey:@"rsaKey"];
             if (rsaKey && [rsaKey length] > 0) [itemData setObject:rsaKey forKey:@"rsaKey"];
-            
+
             NSNumber *rsaKeyUse = [share valueForKey:@"rsaKeyUse"];
             if ([rsaKeyUse boolValue]) {
                 [itemData setObject:rsaKeyUse forKey:@"rsaKeyUse"];
             }
-            
+
             NSString *volumeName = [share valueForKey:@"volumeName"];
             if (volumeName && [volumeName length] > 0) [itemData setObject:volumeName forKey:@"volumeName"];
 
@@ -380,36 +377,31 @@
             NSImage *ejectIcon = [NSImage imageNamed:@"eject"];
 
             if (isMounted) {
-                // Kombiniertes Icon: grün + eject rechts
-                NSImage *composite = [[NSImage alloc] initWithSize:NSMakeSize(28, 16)]; // Gesamtbreite 18+10
+                NSImage *composite = [[NSImage alloc] initWithSize:NSMakeSize(28, 16)];
                 [composite lockFocus];
-                
-                // Grüner Punkt links 16x16
+
                 [greenDot drawInRect:NSMakeRect(0, 0, 16, 16)
                             fromRect:NSZeroRect
                            operation:NSCompositingOperationSourceOver
                             fraction:1.0];
-                
-                // Eject-Icon rechts 10x10, zentriert vertikal
-                [ejectIcon drawInRect:NSMakeRect(18, 3, 10, 10) // y=3 um vertikal zu zentrieren
+
+                [ejectIcon drawInRect:NSMakeRect(18, 3, 10, 10)
                              fromRect:NSZeroRect
                             operation:NSCompositingOperationSourceOver
                              fraction:1.0];
-                
+
                 [composite unlockFocus];
                 [item setImage:composite];
             } else {
                 [item setImage:redDot];
             }
 
-            // Bindings
-            [item bind:@"enabled" toObject:self withKeyPath:@"hasSshfs" options:nil];
-            [item bind:@"enabled2"
-               toObject:self
-            withKeyPath:@"isWorking"
-                options:@{NSValueTransformerNameBindingOption: NSNegateBooleanTransformerName}];
+            // Enabled direkt setzen – unabhängig von globalen Flags
+            BOOL portValid = (port != nil && [port intValue] > 0); // Beispiel-Check, Port muss gesetzt sein
+            [item setEnabled:portValid];
 
             [menu addItem:item];
+        
         }
     }
 

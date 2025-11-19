@@ -22,7 +22,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="0.0" y="436" width="509" height="483"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1169"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2056" height="1254"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="509" height="483"/>
@@ -851,10 +851,10 @@
         </button>
     </objects>
     <resources>
-        <image name="NSAddTemplate" width="18" height="16"/>
+        <image name="NSAddTemplate" width="18" height="17"/>
         <image name="NSApplicationIcon" width="32" height="32"/>
-        <image name="NSRefreshTemplate" width="17" height="20"/>
-        <image name="NSRemoveTemplate" width="18" height="4"/>
+        <image name="NSRefreshTemplate" width="18" height="21"/>
+        <image name="NSRemoveTemplate" width="18" height="5"/>
         <image name="magnifyingglass.circle.fill" catalog="system" width="15" height="15"/>
     </resources>
 </document>
